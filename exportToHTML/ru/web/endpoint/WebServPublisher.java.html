@@ -1,0 +1,106 @@
+<html>
+<head>
+<title>WebServPublisher.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(204,120,50); }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(98,151,85); font-style: italic; }
+.s3 { color: rgb(128,128,128); }
+.s4 { color: rgb(104,151,187); }
+.s5 { color: rgb(106,135,89); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+WebServPublisher.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">ru.web.endpoint</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s2">/** 
+ * Created by rkurbanov on 01.08.16. 
+ */</span><span class="s1"> 
+ 
+</span><span class="s0">import </span><span class="s1">javax.xml.ws.Endpoint</span><span class="s0">;</span><span class="s1"> 
+ 
+</span><span class="s0">import </span><span class="s1">ru.web.SQL.Sql_request</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">ru.web.SQL.sql_connect</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">ru.web.service.WebServiceImpl</span><span class="s0">;</span><span class="s1"> 
+ 
+</span><span class="s0">import </span><span class="s1">java.io.*</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.sql.ResultSet</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.util.List</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.util.concurrent.ExecutionException</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.util.logging.Level</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.util.logging.Logger</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">org.postgresql.Driver</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">ru.web.SQL.*</span><span class="s0">;</span><span class="s1"> 
+ 
+</span><span class="s0">public class </span><span class="s1">WebServPublisher { 
+    </span><span class="s0">public static void </span><span class="s1">main(String... args) </span><span class="s0">throws </span><span class="s1">IOException { 
+        </span><span class="s3">// запускаем веб-сервер на порту 1986</span><span class="s1"> 
+        </span><span class="s3">// и по адресу, указанному в первом аргументе,</span><span class="s1"> 
+        </span><span class="s3">// запускаем веб-сервис, передаваемый во втором аргументе</span><span class="s1"> 
+        </span><span class="s3">//Endpoint.publish(&quot;http://192.168.4.21:1986/webservice/start&quot;, new WebServiceImpl());</span><span class="s1"> 
+        GetConfiguration()</span><span class="s0">;</span><span class="s1"> 
+        Endpoint.publish(Sql_request.Ip[</span><span class="s4">1</span><span class="s1">]+ Sql_request.Port[</span><span class="s4">1</span><span class="s1">]+</span><span class="s5">&quot;/webservice/start&quot;</span><span class="s0">, new </span><span class="s1">WebServiceImpl())</span><span class="s0">;</span><span class="s1"> 
+ 
+       </span><span class="s3">/* System.out.println(Sql_request.URL[1]); 
+        System.out.println(Sql_request.Name[1]); 
+        System.out.println(Sql_request.Pwd[1]);*/</span><span class="s1"> 
+        ResultSet result = </span><span class="s0">null;</span><span class="s1"> 
+       System.out.println(</span><span class="s5">&quot;Сервер запущен успешно!&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+       System.out.println(</span><span class="s5">&quot;WSDL-файл по адресу &quot;</span><span class="s1">+Sql_request.Ip[</span><span class="s4">1</span><span class="s1">]+ Sql_request.Port[</span><span class="s4">1</span><span class="s1">]+</span><span class="s5">&quot;/webservice/start?wsdl&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        System.out.println(</span><span class="s5">&quot;Строка подключению к БД: &quot;</span><span class="s1">+Sql_request.URL[</span><span class="s4">1</span><span class="s1">])</span><span class="s0">;</span><span class="s1"> 
+        System.out.println(</span><span class="s5">&quot;Попытка подключения к БД...&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+ 
+        </span><span class="s0">try </span><span class="s1">{ 
+            result = sql_connect.SQL_Select(</span><span class="s5">&quot;select id from Patient limit 1&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+            System.out.println(</span><span class="s5">&quot;...Подключено!&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        }</span><span class="s0">catch </span><span class="s1">(Exception ex) { 
+            ex.printStackTrace()</span><span class="s0">;</span><span class="s1"> 
+            Logger.getLogger(WebServiceImpl.</span><span class="s0">class</span><span class="s1">.getName()).log(Level.SEVERE</span><span class="s0">, null, </span><span class="s1">ex)</span><span class="s0">;</span><span class="s1">} 
+ 
+ 
+        } 
+ 
+ 
+    </span><span class="s0">private static void </span><span class="s1">GetConfiguration() </span><span class="s0">throws </span><span class="s1">IOException { 
+ 
+        InputStream inp = ClassLoader.getSystemClassLoader().getResourceAsStream(</span><span class="s5">&quot;configuration.conf&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        BufferedReader reader = </span><span class="s0">new </span><span class="s1">BufferedReader(</span><span class="s0">new </span><span class="s1">InputStreamReader(inp))</span><span class="s0">;</span><span class="s1"> 
+ 
+        String line</span><span class="s0">;</span><span class="s1"> 
+ 
+ 
+        List&lt;String&gt; lines = </span><span class="s0">new </span><span class="s1">ArrayList&lt;String&gt;()</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">while </span><span class="s1">((line = reader.readLine()) != </span><span class="s0">null</span><span class="s1">) { 
+            lines.add(line)</span><span class="s0">;</span><span class="s1"> 
+        } 
+        String strin = lines.get(</span><span class="s4">0</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        Sql_request.URL = strin.split(</span><span class="s5">&quot;=&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        strin = lines.get(</span><span class="s4">1</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        Sql_request.Name = strin.split(</span><span class="s5">&quot;=&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        strin = lines.get(</span><span class="s4">2</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        Sql_request.Pwd = strin.split(</span><span class="s5">&quot;=&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        strin = lines.get(</span><span class="s4">3</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        Sql_request.Ip = strin.split(</span><span class="s5">&quot;=&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        strin = lines.get(</span><span class="s4">4</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        Sql_request.Port = strin.split(</span><span class="s5">&quot;=&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+ 
+        </span><span class="s0">if</span><span class="s1">(Sql_request.Pwd[</span><span class="s4">1</span><span class="s1">].equalsIgnoreCase(</span><span class="s5">&quot;null&quot;</span><span class="s1">)) 
+        { 
+            Sql_request.Pwd[</span><span class="s4">1</span><span class="s1">] = </span><span class="s5">&quot;&quot;</span><span class="s0">;</span><span class="s1"> 
+        } 
+    } 
+ 
+} 
+ 
+ 
+</span></pre>
+</body>
+</html>

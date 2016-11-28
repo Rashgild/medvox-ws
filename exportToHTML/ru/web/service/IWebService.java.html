@@ -1,0 +1,64 @@
+<html>
+<head>
+<title>IWebService.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(204,120,50); }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(98,151,85); font-style: italic; }
+.s3 { color: rgb(128,128,128); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+IWebService.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">ru.web.service</span><span class="s0">;</span><span class="s1"> 
+ 
+</span><span class="s0">import </span><span class="s1">ru.web.classes.*</span><span class="s0">;</span><span class="s1"> 
+ 
+</span><span class="s0">import </span><span class="s1">javax.jws.WebMethod</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">javax.jws.soap.SOAPBinding</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.io.IOException</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList</span><span class="s0">;</span><span class="s1"> 
+ 
+</span><span class="s2">/** 
+ * Created by rkurbanov on 01.08.16. 
+ */</span><span class="s1"> 
+@javax.jws.WebService 
+</span><span class="s3">// говорим, что веб-сервис будет использоваться для вызова методов</span><span class="s1"> 
+@SOAPBinding(style = SOAPBinding.Style.RPC) 
+</span><span class="s0">public interface </span><span class="s1">IWebService { 
+ 
+    </span><span class="s3">// говорим, что этот метод можно вызывать удаленно</span><span class="s1"> 
+    @WebMethod 
+ 
+    </span><span class="s0">public </span><span class="s1">ArrayOfPatient getArrayOfPatient(Integer birthday) </span><span class="s0">throws </span><span class="s1">IOException</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public </span><span class="s1">ArrayOfSpecialization getArrayOfSpecialization() </span><span class="s0">throws </span><span class="s1">IOException</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public </span><span class="s1">ArrayOfDoctor getArrayOfDoctor(Integer id_specialization) </span><span class="s0">throws </span><span class="s1">IOException</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public </span><span class="s1">ArrayOfDate getArrayOfDatesFirst(Integer id_specialization) </span><span class="s0">throws </span><span class="s1">IOException</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public </span><span class="s1">ArrayOfDate getArrayOfDatesSecond(Integer id_specialization</span><span class="s0">, </span><span class="s1">Integer id_doctor) </span><span class="s0">throws </span><span class="s1">IOException</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public </span><span class="s1">ArrayOfTime getArrayOfTimesFirst(Integer id_specialization</span><span class="s0">, </span><span class="s1">Integer id_day) </span><span class="s0">throws </span><span class="s1">IOException</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public </span><span class="s1">ArrayOfTime getArrayOfTimesSecond(Integer id_day) </span><span class="s0">throws </span><span class="s1">IOException</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public </span><span class="s1">String getAllInformation(Integer id_doc</span><span class="s0">, </span><span class="s1">Integer id_spec</span><span class="s0">, </span><span class="s1">Integer id_date</span><span class="s0">, </span><span class="s1">Integer id_time) </span><span class="s0">throws </span><span class="s1">IOException</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public int </span><span class="s1">setPatientRecord(Integer id_patient</span><span class="s0">, </span><span class="s1">Integer id_time) </span><span class="s0">throws </span><span class="s1">IOException</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public int </span><span class="s1">CheckTimeCalendar(Integer id_time) </span><span class="s0">throws </span><span class="s1">IOException</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public </span><span class="s1">ArrayOfAllinformation getArrayOfAllinformation(Integer id_doc</span><span class="s0">, </span><span class="s1">Integer id_spec</span><span class="s0">, </span><span class="s1">Integer id_date</span><span class="s0">, </span><span class="s1">Integer id_time) </span><span class="s0">throws </span><span class="s1">IOException</span><span class="s0">;</span><span class="s1"> 
+ 
+    </span><span class="s3">//public</span><span class="s1"> 
+} 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+</span></pre>
+</body>
+</html>

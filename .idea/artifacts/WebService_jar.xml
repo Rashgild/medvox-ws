@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="WebService:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/WebService_jar</output-path>
+    <root id="archive" name="WebService.jar">
+      <element id="module-output" name="WebService" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/postgresql.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

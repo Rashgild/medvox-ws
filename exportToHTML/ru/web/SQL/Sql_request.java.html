@@ -1,0 +1,228 @@
+<html>
+<head>
+<title>Sql_request.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(204,120,50); }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(98,151,85); font-style: italic; }
+.s3 { color: rgb(106,135,89); }
+.s4 { color: rgb(128,128,128); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+Sql_request.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">ru.web.SQL</span><span class="s0">;</span><span class="s1"> 
+ 
+</span><span class="s0">import </span><span class="s1">java.io.FileWriter</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.io.IOException</span><span class="s0">;</span><span class="s1"> 
+ 
+</span><span class="s2">/** 
+ * Created by rkurbanov on 04.08.16. 
+ */</span><span class="s1"> 
+</span><span class="s0">public class </span><span class="s1">Sql_request { 
+ 
+    </span><span class="s0">public static </span><span class="s1">String URL[]</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public  static  </span><span class="s1">String Name[]</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public  static </span><span class="s1">String Pwd[]</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public  static  </span><span class="s1">String Ip[]</span><span class="s0">;</span><span class="s1"> 
+    </span><span class="s0">public  static </span><span class="s1">String Port[]</span><span class="s0">;</span><span class="s1"> 
+ 
+    </span><span class="s0">public  static </span><span class="s1">String SelectSpecialization(){ 
+        String req = </span><span class="s3">&quot;select vwf.id ,vwf.name</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;from WorkFunction as wf </span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join Worker as w on w.id=wf.worker_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join Patient as p on p.id=w.person_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;inner join VocWorkFunction vwf on vwf.id=wf.workFunction_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join WorkCalendar wc on wc.workFunction_id=wf.id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join workcalendarday wcd on wcd.workcalendar_id=wc.id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join workcalendartime wct on wct.workCalendarDay_id=wcd.id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join mislpu mlGr on mlGr.id=wf.lpu_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;where wc.id is not null</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and wcd.calendardate&gt;=current_date</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and wf.group_id is null </span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and (wf.archival is null or wf.archival='0')</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and (wf.isnoviewremoteuser  ='0' or wf.isnoviewremoteuser is null)</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and coalesce(w.lpu_id,wf.lpu_id)=180</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and wct.medCase_id is null and wct.prepatient_id is null and (wct.prepatientinfo is null or wct.prepatientinfo='') and wct.reserveType_id is null</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;group by vwf.id, vwf.name</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;having count(wct.id)&gt;0&quot;</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">return </span><span class="s1">req</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">public  static </span><span class="s1">String SelectDoctor(Integer id_spec){ 
+        String req= </span><span class="s3">&quot;SELECT</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;wf.id , vwf.name, case when wf.dtype='PersonalWorkFunction' then p.lastname</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;else wf.groupname end as lastname,</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;coalesce(p.firstname,'') as firstname, coalesce(p.middlename,'') as middlename</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;from WorkFunction as wf</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join Worker as w on w.id=wf.worker_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join Patient as p on p.id=w.person_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;inner join VocWorkFunction vwf on vwf.id=wf.workFunction_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join WorkCalendar wc on wc.workFunction_id=wf.id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join mislpu mlGr on mlGr.id=wf.lpu_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join workcalendarday wcd on wcd.workcalendar_id=wc.id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join workcalendartime wct on wct.workCalendarDay_id=wcd.id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;where wc.id is not null</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and wf.group_id is null</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and (wf.archival is null or wf.archival='0')</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and (wf.isnoviewremoteuser  ='0' or wf.isnoviewremoteuser is null)</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and coalesce(wf.lpu_id,w.lpu_id)=180</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and wct.prepatient_id is null</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and (wct.prepatientinfo is null or wct.prepatientinfo='') </span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and wct.reserveType_id is null</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and wct.medCase_id is null</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and wct.createprerecord is null</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and wcd.calendardate&gt;=current_date</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and vwf.id = &quot; </span><span class="s1">+id_spec+ 
+                </span><span class="s3">&quot;group by wf.id, vwf.name, p.lastname ,p.firstname,p.middlename</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;having count(wct.id)&gt;0&quot;</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">return </span><span class="s1">req</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">public  static  </span><span class="s1">String SelectDateSecond(Integer id_doctor</span><span class="s0">, </span><span class="s1">Integer id_specialization) 
+    { 
+        String req = </span><span class="s3">&quot;select  max(wcd.id) as id, to_char(wcd.calendardate,'dd.mm.yyyy') as date</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot; from workCalendar wc </span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot; left join workcalendarday wcd on wcd.workcalendar_id=wc.id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot; left join workcalendartime wct on wct.workcalendarday_id=wcd.id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot; left join workfunction wf on wf.id=wc.workfunction_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot; left join vocworkfunction vwf on vwf.id=wf.workfunction_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot; where </span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot; wcd.calendardate&gt;=current_date</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and wct.medCase_id is null and wct.prepatient_id is null &quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and (wct.prepatientinfo is null or wct.prepatientinfo='') </span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and wct.reserveType_id is null</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and wf.id= </span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+id_doctor+  </span><span class="s4">//поиск по сотруднику</span><span class="s1"> 
+                </span><span class="s3">&quot;and  vwf.id= </span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s1">+id_specialization+ </span><span class="s4">//поиск по специализации</span><span class="s1"> 
+                </span><span class="s3">&quot;group by wcd.calendardate</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;order by wcd.calendardate&quot;</span><span class="s0">;</span><span class="s1"> 
+ 
+        </span><span class="s0">return </span><span class="s1">req</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">public  static  </span><span class="s1">String SelectTimeSecond(Integer id_date) 
+    { 
+        String req = </span><span class="s3">&quot;select max(wct.id) as id,cast(wct.timeFrom as varchar(5)) as time</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;from WorkCalendarTime wct</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join VocServiceReserveType vsrt on vsrt.id=wct.reserveType_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join WorkCalendarDay wcd on wcd.id=wct.workCalendarDay_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join workcalendar wc on wc.id=wcd.workcalendar_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join workfunction wf on wf.id=wc.workfunction_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join vocworkfunction vwf on vwf.id=wf.workfunction_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;where </span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;wct.workCalendarDay_id = </span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ id_date + 
+                </span><span class="s3">&quot;--vwf.id='35' and wcd.calendardate = (select calendardate from workcalendarday where id ='127095') —Поиск по специальностям и дню</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and wct.medCase_id is null and wct.prepatient_id is null and (wct.prepatientinfo is null or wct.prepatientinfo='') and wct.reserveType_id is null</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and wcd.calendardate&gt;=current_date</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;group by wct.timeFrom</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;order by wct.timeFrom&quot;</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">return  </span><span class="s1">req</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">public  static  </span><span class="s1">String SelectAllInformation(Integer id_spec</span><span class="s0">, </span><span class="s1">Integer id_date</span><span class="s0">, </span><span class="s1">Integer id_time) 
+    { 
+        String req = </span><span class="s3">&quot;select vwf.name, p.lastname, p.firstname, p.middlename,to_char(wcd.calendardate,'dd.mm.yyyy') as date ,cast(wct.timeFrom as varchar(5)) as time</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;from WorkFunction as wf </span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;--left join  WorkCalendarTime as wdd</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join Worker as w on w.id=wf.worker_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join Patient as p on p.id=w.person_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;inner join VocWorkFunction vwf on vwf.id=wf.workFunction_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join WorkCalendar wc on wc.workFunction_id=wf.id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join mislpu mlGr on mlGr.id=wf.lpu_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join workcalendarday wcd on wcd.workcalendar_id=wc.id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;left join workcalendartime wct on wct.workcalendarday_id=wcd.id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;where wc.id is not null</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and wf.group_id is null </span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and (wf.archival is null or wf.archival='0')</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and (wf.isnoviewremoteuser  ='0' or wf.isnoviewremoteuser is null)</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and coalesce(w.lpu_id,wf.lpu_id)=180</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and vwf.id  = &quot; </span><span class="s1">+id_spec+   </span><span class="s4">//13</span><span class="s1"> 
+                </span><span class="s4">//&quot;and wf.id = &quot; +id_doc+ //1364</span><span class="s1"> 
+                </span><span class="s3">&quot;and wcd.id = &quot; </span><span class="s1">+id_date+ </span><span class="s4">//103119</span><span class="s1"> 
+                </span><span class="s3">&quot;and wct.id = &quot;</span><span class="s1">+id_time</span><span class="s0">; </span><span class="s4">//2946206</span><span class="s1"> 
+        </span><span class="s0">return  </span><span class="s1">req</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">public  static  </span><span class="s1">String SelectDateFirst(Integer id_specialization) 
+    { 
+        String req = </span><span class="s3">&quot;select  max(wcd.id) as id, to_char(wcd.calendardate,'dd.mm.yyyy') as date</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot; from workCalendar wc </span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot; left join workcalendarday wcd on wcd.workcalendar_id=wc.id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot; left join workcalendartime wct on wct.workcalendarday_id=wcd.id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot; left join workfunction wf on wf.id=wc.workfunction_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot; left join vocworkfunction vwf on vwf.id=wf.workfunction_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot; where </span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot; wcd.calendardate&gt;=current_date</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and wct.medCase_id is null and wct.prepatient_id is null &quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and (wct.prepatientinfo is null or wct.prepatientinfo='') </span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and wct.reserveType_id is null</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s4">//&quot;and wf.id= \n&quot; +id_doctor+  //поиск по сотруднику</span><span class="s1"> 
+                </span><span class="s3">&quot;and  vwf.id= </span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s1">+id_specialization+ </span><span class="s4">//поиск по специализации</span><span class="s1"> 
+                </span><span class="s3">&quot;group by wcd.calendardate</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;order by wcd.calendardate&quot;</span><span class="s0">;</span><span class="s1"> 
+ 
+        </span><span class="s0">return </span><span class="s1">req</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">public  static  </span><span class="s1">String SelectTimeFirst(Integer id_specialization</span><span class="s0">, </span><span class="s1">Integer id_date) 
+    { 
+        String req = </span><span class="s3">&quot;</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;select max(wct.id) as id,cast(wct.timeFrom as varchar(5)) as time </span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;     from WorkCalendarTime wct</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;     left join VocServiceReserveType vsrt on vsrt.id=wct.reserveType_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;     left join WorkCalendarDay wcd on wcd.id=wct.workCalendarDay_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;     left join workcalendar wc on wc.id=wcd.workcalendar_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;     left join workfunction wf on wf.id=wc.workfunction_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;     left join vocworkfunction vwf on vwf.id=wf.workfunction_id</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;     where </span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;    vwf.id= &quot; </span><span class="s1">+ id_specialization+ 
+                </span><span class="s3">&quot;  and wcd.calendardate = (select calendardate from workcalendarday where id = &quot;</span><span class="s1">+id_date+</span><span class="s3">&quot;)&quot;</span><span class="s1">+ 
+                </span><span class="s3">&quot;    and wct.medCase_id is null and wct.prepatient_id is null and (wct.prepatientinfo is null or wct.prepatientinfo='') and wct.reserveType_id is null</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;    and wcd.calendardate&gt;=current_date</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;group by wct.timeFrom</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;     order by wct.timeFrom&quot;</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">return </span><span class="s1">req</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">public  static  </span><span class="s1">String SelectPatients(Integer bithdate) 
+    { 
+        String req = </span><span class="s3">&quot;select id, lastname, firstname, middlename,to_char(birthday,'dd.mm.yyyy') as birthday  </span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;from Patient </span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;where noactuality is null</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and deathdate is null </span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;and birthday ='&quot;</span><span class="s1">+bithdate+</span><span class="s3">&quot;'&quot;</span><span class="s0">; </span><span class="s4">//19890801</span><span class="s1"> 
+        </span><span class="s0">return </span><span class="s1">req</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">public  static  </span><span class="s1">String UpdatePatient(Integer patient_id</span><span class="s0">, </span><span class="s1">Integer time_id) 
+    { 
+        String req =</span><span class="s3">&quot;update WorkCalendarTime</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot;        set</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot; createprerecord = 'TestMedVox',</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot; createdateprerecord = current_date,</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot; createtimeprerecord= current_time,</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ 
+                </span><span class="s3">&quot; prepatient_id = &quot; </span><span class="s1">+patient_id+ 
+                </span><span class="s3">&quot; where id= &quot; </span><span class="s1">+time_id+ 
+                </span><span class="s3">&quot;        returning id&quot;</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">return </span><span class="s1">req</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">public static  </span><span class="s1">String CheckPatientEmpty(Integer time_id) 
+    { 
+        String req =</span><span class="s3">&quot;select prepatient_id from WorkCalendarTime where id=&quot;</span><span class="s1">+time_id</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">return </span><span class="s1">req</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+ 
+} 
+</span></pre>
+</body>
+</html>

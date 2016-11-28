@@ -1,0 +1,259 @@
+<html>
+<head>
+<title>WebServiceClient.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(204,120,50); }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(98,151,85); font-style: italic; }
+.s3 { color: rgb(128,128,128); }
+.s4 { color: rgb(106,135,89); }
+.s5 { color: rgb(104,151,187); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+WebServiceClient.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">ru.web.client</span><span class="s0">;</span><span class="s1"> 
+ 
+</span><span class="s2">/** 
+ * Created by rkurbanov on 01.08.16. 
+ */</span><span class="s1"> 
+ 
+</span><span class="s0">import </span><span class="s1">java.io.IOException</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.net.URL</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.net.MalformedURLException</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.util.List</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">javax.xml.namespace.QName</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">javax.xml.ws.Service</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">ru.web.service.IWebService</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">ru.web.classes.*</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">ru.web.service.WebServiceImpl</span><span class="s0">;</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.util.Scanner</span><span class="s0">;</span><span class="s1"> 
+ 
+</span><span class="s0">public class </span><span class="s1">WebServiceClient { 
+ 
+ 
+   </span><span class="s3">/* public static void StartService() throws MalformedURLException { 
+          URL url = new URL(&quot;http://192.168.4.86:1986/webservice/start?wsdl&quot;); 
+          QName qname = new QName(&quot;http://service.web.ru/&quot;, &quot;WebServiceImplService&quot;); 
+          Service service = Service.create(url, qname); 
+          final IWebService start = service.getPort(IWebService.class); 
+    }*/</span><span class="s1"> 
+ 
+    </span><span class="s0">public static void </span><span class="s1">main(String[] args) </span><span class="s0">throws </span><span class="s1">IOException { 
+ 
+        URL url = </span><span class="s0">new </span><span class="s1">URL(</span><span class="s4">&quot;http://192.168.7.19:1986/webservice/start?wsdl&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        QName qname = </span><span class="s0">new </span><span class="s1">QName(</span><span class="s4">&quot;http://service.web.ru/&quot;</span><span class="s0">, </span><span class="s4">&quot;WebServiceImplService&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        Service service = Service.create(url</span><span class="s0">, </span><span class="s1">qname)</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">final </span><span class="s1">IWebService start = service.getPort(IWebService.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+ 
+        </span><span class="s0">int </span><span class="s1">i=</span><span class="s5">0</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">int </span><span class="s1">id_spec =</span><span class="s5">0</span><span class="s0">,</span><span class="s1"> 
+                id_doc =</span><span class="s5">0</span><span class="s0">,</span><span class="s1"> 
+                id_date =</span><span class="s5">0</span><span class="s0">,</span><span class="s1"> 
+                id_time =</span><span class="s5">0</span><span class="s0">,</span><span class="s1"> 
+                bithdate_patient=</span><span class="s5">0</span><span class="s0">,</span><span class="s1"> 
+                id_patient=</span><span class="s5">0</span><span class="s0">;</span><span class="s1"> 
+ 
+        String str_id_special=</span><span class="s4">&quot;&quot;</span><span class="s0">,</span><span class="s1"> 
+                str_id_doc = </span><span class="s4">&quot;&quot;</span><span class="s0">,</span><span class="s1"> 
+                str_id_date = </span><span class="s4">&quot;&quot;</span><span class="s0">,</span><span class="s1"> 
+                str_id_time = </span><span class="s4">&quot;&quot;</span><span class="s0">,</span><span class="s1"> 
+                str_bithdate_patient=</span><span class="s4">&quot;&quot;</span><span class="s0">,</span><span class="s1"> 
+                str_lastname=</span><span class="s4">&quot;р&quot;</span><span class="s0">,</span><span class="s1">str_firstname=</span><span class="s4">&quot;р&quot;</span><span class="s0">, </span><span class="s1">str_middlename=</span><span class="s4">&quot;р&quot;</span><span class="s0">, </span><span class="s1">str_nam=</span><span class="s4">&quot;&quot;</span><span class="s0">;</span><span class="s1"> 
+ 
+ 
+ 
+</span><span class="s3">//-----Идентефикация пациента</span><span class="s1"> 
+ 
+        System.out.println(</span><span class="s4">&quot;Введите вашу дату рождения в формате ГГГГММДД&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        bithdate_patient = CheckInput(str_bithdate_patient</span><span class="s0">, </span><span class="s1">bithdate_patient)</span><span class="s0">;</span><span class="s1"> 
+ 
+ 
+       </span><span class="s3">// System.out.println (&quot;sp=&quot;+start.getArrayOfPatient(bithdate_patient).getPatients().size());</span><span class="s1"> 
+        List&lt;Patient&gt; sp0 = start.getArrayOfPatient(bithdate_patient).getPatients()</span><span class="s0">;</span><span class="s1"> 
+       </span><span class="s3">/* for (Patient s: sp0) 
+        { i++; 
+            System.out.println(i+&quot;id=&quot;+s.getId()+&quot;ФИО=&quot; +s.getLastname()+&quot; &quot;+ 
+                    s.getFirstname()+&quot; &quot;+s.getMiddlename()+&quot; Дата рождения= &quot;+s.getBirthday()); 
+        }*/</span><span class="s1"> 
+        i=</span><span class="s5">0</span><span class="s0">;</span><span class="s1"> 
+ 
+        String strf=</span><span class="s4">&quot;5&quot;</span><span class="s0">;</span><span class="s1"> 
+        System.out.println(</span><span class="s4">&quot;Введите Ваши ФИО (одной строкой)&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        strf= InputFio(strf)</span><span class="s0">;</span><span class="s1"> 
+        String[] ss = strf.split(</span><span class="s4">&quot; &quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        str_lastname = ss[</span><span class="s5">0</span><span class="s1">]</span><span class="s0">;</span><span class="s1"> 
+        str_firstname= ss[</span><span class="s5">1</span><span class="s1">]</span><span class="s0">;</span><span class="s1"> 
+        str_middlename = ss[</span><span class="s5">2</span><span class="s1">]</span><span class="s0">;</span><span class="s1"> 
+        System.out.println (</span><span class="s4">&quot;Здравствуйте, &quot;</span><span class="s1">+str_lastname+</span><span class="s4">&quot; &quot;</span><span class="s1">+str_firstname+</span><span class="s4">&quot; &quot;</span><span class="s1">+str_middlename)</span><span class="s0">;</span><span class="s1"> 
+ 
+        </span><span class="s0">for</span><span class="s1">(Patient s: sp0) 
+        { 
+               </span><span class="s0">if</span><span class="s1">(s.getLastname().equalsIgnoreCase(str_lastname)) </span><span class="s3">//&amp;&amp;</span><span class="s1"> 
+                  </span><span class="s3">//  s.getFirstname().equalsIgnoreCase(str_firstname) &amp;&amp; s.getMiddlename().equalsIgnoreCase(str_middlename))</span><span class="s1"> 
+            { 
+                id_patient = s.getId()</span><span class="s0">;</span><span class="s1"> 
+                System.out.println (</span><span class="s4">&quot;Здравствуйте, &quot;</span><span class="s1">+str_lastname+</span><span class="s4">&quot; &quot;</span><span class="s1">+str_firstname+</span><span class="s4">&quot; &quot;</span><span class="s1">+str_middlename)</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">break;</span><span class="s1"> 
+            } 
+        } 
+ 
+        </span><span class="s0">if </span><span class="s1">(id_patient == </span><span class="s5">0</span><span class="s1">) { 
+            System.out.println(</span><span class="s4">&quot;Мы Вас не нашли у себя в базе...&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+            System.exit(</span><span class="s5">0</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        } 
+        System.out.println(</span><span class="s4">&quot;&quot;</span><span class="s1">+id_patient)</span><span class="s0">;</span><span class="s1"> 
+ 
+ 
+</span><span class="s3">//-----Специализации</span><span class="s1"> 
+        </span><span class="s3">//System.out.println (&quot;sp=&quot;+start.getArrayOfSpecialization().getSpecializations().size());</span><span class="s1"> 
+        List&lt;Specialization&gt; sp = start.getArrayOfSpecialization().getSpecializations()</span><span class="s0">;</span><span class="s1"> 
+ 
+        </span><span class="s0">for </span><span class="s1">(Specialization s: sp) 
+        { i++</span><span class="s0">;</span><span class="s1"> 
+          System.out.println(i+</span><span class="s4">&quot; Name=&quot;</span><span class="s1">+s.getName()+</span><span class="s4">&quot; id=&quot;</span><span class="s1">+s.getId())</span><span class="s0">; </span><span class="s1">} 
+        i=</span><span class="s5">0</span><span class="s0">;</span><span class="s1"> 
+ 
+        System.out.println(</span><span class="s4">&quot;Введите Id специальности&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        id_spec = CheckInput(str_id_special</span><span class="s0">, </span><span class="s1">id_spec)</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s3">//System.out.println (&quot;sp=&quot;+start.getArrayOfDoctor(id_spec).getDoctors().size());</span><span class="s1"> 
+        List&lt;Doctor&gt; sp1 = start.getArrayOfDoctor(id_spec).getDoctors()</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">for </span><span class="s1">(Doctor s: sp1) 
+        { i++</span><span class="s0">;</span><span class="s1"> 
+            System.out.println(i+</span><span class="s4">&quot; Name=&quot;</span><span class="s1">+s.getName()+</span><span class="s4">&quot; id= &quot;</span><span class="s1">+s.getId() +</span><span class="s4">&quot; ФИО=&quot; </span><span class="s1">+s.getLastname()+</span><span class="s4">&quot; &quot;</span><span class="s1">+ 
+                    s.getFirstname()+</span><span class="s4">&quot; &quot;</span><span class="s1">+s.getMiddlename())</span><span class="s0">;</span><span class="s1"> 
+        } 
+        i=</span><span class="s5">0</span><span class="s0">;</span><span class="s1"> 
+ 
+ 
+        System.out.println(</span><span class="s4">&quot; Введите Id врача </span><span class="s0">\n</span><span class="s4"> Если хотите перейти к выбору даты - введите 0&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        id_doc = CheckInput(str_id_doc</span><span class="s0">,</span><span class="s1">id_doc)</span><span class="s0">;</span><span class="s1"> 
+ 
+ 
+ 
+        </span><span class="s3">//разветвление на выбор врача или...</span><span class="s1"> 
+        </span><span class="s0">if</span><span class="s1">(id_doc&gt;</span><span class="s5">0</span><span class="s1">) 
+        { 
+            List&lt;Date&gt; sp2 = start.getArrayOfDatesSecond(id_spec</span><span class="s0">,</span><span class="s1">id_doc).getDates()</span><span class="s0">;</span><span class="s1"> 
+            </span><span class="s0">for </span><span class="s1">(Date s: sp2) 
+            { i++</span><span class="s0">;</span><span class="s1"> 
+                System.out.println(i+</span><span class="s4">&quot; Дата= &quot;</span><span class="s1">+s.getDate()+</span><span class="s4">&quot; Id = &quot;</span><span class="s1">+s.getId())</span><span class="s0">;</span><span class="s1"> 
+            } 
+            System.out.println(</span><span class="s4">&quot;Введите Id даты&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+            id_date = CheckInput(str_id_date</span><span class="s0">, </span><span class="s1">id_date)</span><span class="s0">;</span><span class="s1"> 
+ 
+            List&lt;Time&gt; sp3 = start.getArrayOfTimesSecond(id_date).getTimes()</span><span class="s0">;</span><span class="s1"> 
+            </span><span class="s0">for </span><span class="s1">(Time s: sp3) 
+            { i++</span><span class="s0">;</span><span class="s1"> 
+                System.out.println(i+</span><span class="s4">&quot; Время= &quot;</span><span class="s1">+s.getTime()+</span><span class="s4">&quot; Id = &quot;</span><span class="s1">+s.getId())</span><span class="s0">;</span><span class="s1"> 
+            } 
+            System.out.println(</span><span class="s4">&quot;Введите Id времени &quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+            id_time = CheckInput(str_id_time</span><span class="s0">, </span><span class="s1">id_time)</span><span class="s0">;</span><span class="s1"> 
+        } 
+ 
+        </span><span class="s3">//...на выбор сразу времени</span><span class="s1"> 
+        </span><span class="s0">if</span><span class="s1">(id_doc==</span><span class="s5">0</span><span class="s1">) 
+        { 
+            List&lt;Date&gt; sp2 = start.getArrayOfDatesFirst(id_spec).getDates()</span><span class="s0">;</span><span class="s1"> 
+            </span><span class="s0">for </span><span class="s1">(Date s: sp2) 
+            { i++</span><span class="s0">;</span><span class="s1"> 
+                System.out.println(i+</span><span class="s4">&quot; Дата= &quot;</span><span class="s1">+s.getDate()+</span><span class="s4">&quot; Id = &quot;</span><span class="s1">+s.getId())</span><span class="s0">;</span><span class="s1"> 
+            } 
+            System.out.println(</span><span class="s4">&quot;Введите Id даты&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+            id_date = CheckInput(str_id_date</span><span class="s0">, </span><span class="s1">id_date)</span><span class="s0">;</span><span class="s1"> 
+ 
+            List&lt;Time&gt; sp3 = start.getArrayOfTimesFirst(id_spec</span><span class="s0">,</span><span class="s1">id_date).getTimes()</span><span class="s0">;</span><span class="s1"> 
+            </span><span class="s0">for </span><span class="s1">(Time s: sp3) 
+            { i++</span><span class="s0">;</span><span class="s1"> 
+                System.out.println(i+</span><span class="s4">&quot; Время= &quot;</span><span class="s1">+s.getTime()+</span><span class="s4">&quot; Id = &quot;</span><span class="s1">+s.getId())</span><span class="s0">;</span><span class="s1"> 
+            } 
+            System.out.println(</span><span class="s4">&quot;Введите Id времени &quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+            id_time = CheckInput(str_id_time</span><span class="s0">, </span><span class="s1">id_time)</span><span class="s0">;</span><span class="s1"> 
+        } 
+        i=</span><span class="s5">0</span><span class="s0">;</span><span class="s1"> 
+ 
+        </span><span class="s3">//System.out.println(&quot;Вы, &quot;+str_lastname+&quot; &quot;+str_firstname+&quot; &quot;+str_middlename+&quot;, хотите записаться на прием к &quot;+start.getAllInformation(id_doc, id_spec, id_date, id_time));</span><span class="s1"> 
+        List&lt;AllInformation&gt; all  = start.getArrayOfAllinformation(id_doc</span><span class="s0">, </span><span class="s1">id_spec</span><span class="s0">, </span><span class="s1">id_date</span><span class="s0">, </span><span class="s1">id_time).getAllinformation()</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">for </span><span class="s1">(AllInformation s: all) 
+        { </span><span class="s3">//i++;</span><span class="s1"> 
+            </span><span class="s3">//System.out.println(i+&quot; Name=&quot;+s.getName()+&quot; id=&quot;+s.getId());</span><span class="s1"> 
+ 
+            System.out.println(</span><span class="s4">&quot;Вы &quot;</span><span class="s1">+str_lastname+</span><span class="s4">&quot; &quot;</span><span class="s1">+str_firstname+</span><span class="s4">&quot; &quot;</span><span class="s1">+str_middlename+</span><span class="s4">&quot;&quot; </span><span class="s1">+ 
+                    </span><span class="s4">&quot; хотите записаться на прием к &quot;</span><span class="s1">+s.getName()+</span><span class="s4">&quot; &quot;</span><span class="s1">+s.getLastname()+</span><span class="s4">&quot; &quot;</span><span class="s1">+ 
+            s.getFirstname()+</span><span class="s4">&quot; &quot;</span><span class="s1">+s.getMiddlename()+</span><span class="s4">&quot; на &quot;</span><span class="s1">+s.getDate()+</span><span class="s4">&quot; &quot;</span><span class="s1">+s.getTime())</span><span class="s0">;</span><span class="s1"> 
+        } 
+        </span><span class="s3">//start.getArr</span><span class="s1"> 
+ 
+        </span><span class="s0">int </span><span class="s1">result2 = start.CheckTimeCalendar(id_time)</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">if</span><span class="s1">(result2==</span><span class="s5">0</span><span class="s1">) 
+        { 
+            </span><span class="s0">int </span><span class="s1">resultat = start.setPatientRecord(id_patient</span><span class="s0">,</span><span class="s1">id_time)</span><span class="s0">;</span><span class="s1"> 
+            </span><span class="s0">if </span><span class="s1">(resultat &gt; </span><span class="s5">0  </span><span class="s1">) { System.out.println(</span><span class="s4">&quot;Вы успешно записаны, Ваш номер в очереди&quot;</span><span class="s1">+resultat+</span><span class="s4">&quot; :D&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1">} 
+            </span><span class="s0">else </span><span class="s1">System.out.println(</span><span class="s4">&quot;Что-то пошло не так!&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        }</span><span class="s0">else </span><span class="s1">System.out.println(</span><span class="s4">&quot;ОЙ! Что-то пошло не так! Давайте попробуем снова?&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">private static int </span><span class="s1">CheckInput(String str</span><span class="s0">, int </span><span class="s1">id) 
+    { 
+        Scanner scan = </span><span class="s0">new </span><span class="s1">Scanner(System.in)</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">while </span><span class="s1">(str.matches(</span><span class="s4">&quot;^</span><span class="s0">\\</span><span class="s4">d+$&quot;</span><span class="s1">)==</span><span class="s0">false</span><span class="s1">) { 
+            str = scan.nextLine()</span><span class="s0">;</span><span class="s1"> 
+            </span><span class="s0">if </span><span class="s1">((str.matches(</span><span class="s4">&quot;^</span><span class="s0">\\</span><span class="s4">d+$&quot;</span><span class="s1">))) { 
+                id = Integer.parseInt(str)</span><span class="s0">;</span><span class="s1"> 
+                </span><span class="s0">return </span><span class="s1">id</span><span class="s0">;</span><span class="s1"> 
+            } 
+            </span><span class="s0">else </span><span class="s1">System.out.println(</span><span class="s4">&quot;Неверный ввод данных! Повторите попытку: &quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1"> 
+        } 
+        </span><span class="s0">return </span><span class="s1">id</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">private static </span><span class="s1">String InputFio(String str) 
+    { 
+ 
+        Scanner scan = </span><span class="s0">new </span><span class="s1">Scanner(System.in)</span><span class="s0">;</span><span class="s1"> 
+        str = scan.nextLine()</span><span class="s0">;</span><span class="s1"> 
+        </span><span class="s0">return </span><span class="s1">str</span><span class="s0">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">private static boolean </span><span class="s1">equals(String str1</span><span class="s0">, </span><span class="s1">String str2) { 
+        </span><span class="s0">return </span><span class="s1">str1 == </span><span class="s0">null </span><span class="s1">? str2 == </span><span class="s0">null </span><span class="s1">: str1.equals(str2)</span><span class="s0">;</span><span class="s1"> 
+    } 
+} 
+ 
+ 
+ 
+</span><span class="s3">/*ArrayOfSpecialization arr = new ArrayOfSpecialization(); 
+        List&lt;Specialization&gt; specializations = arr.getSpecial(); 
+        arr =  start.getSpecializations(); 
+        sp = start.getSpecializations(); 
+        sp = start.getSpecializations(); 
+ 
+        //Создание потока 
+        Thread myThready = new Thread(new Runnable() 
+        { 
+            public void run() //Этот метод будет выполняться в побочном потоке 
+            { 
+                //System.out.println(&quot;Второй поток!&quot;); 
+                System.out.println(start.getPostgresConnection(&quot;2&quot;));&quot;&quot; 
+            public void run() //Этот метод будет выполняться в побочном потоке 
+            { 
+                //System.out.println(&quot;Третий поток!&quot;); 
+                System.out.println(start.getPostgresConnection(&quot;3&quot;)); 
+            } 
+        }); 
+        myThready.start();  //Запуск потока 
+        myThready2.start(); 
+        //System.out.println(&quot;Главный поток завершён...&quot;);*/</span><span class="s1"> 
+ 
+ 
+</span></pre>
+</body>
+</html>

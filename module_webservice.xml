@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_webservice" default="compile.module.webservice">
+  <dirname property="module.webservice.basedir" file="${ant.file.module_webservice}"/>
+  
+  <property name="module.jdk.home.webservice" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.webservice" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.webservice" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.webservice" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="webservice.output.dir" value="${module.webservice.basedir}/out/production/WebService"/>
+  <property name="webservice.testoutput.dir" value="${module.webservice.basedir}/out/test/WebService"/>
+  
+  <path id="webservice.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="webservice.module.production.classpath">
+    <path refid="${module.jdk.classpath.webservice}"/>
+    <path refid="library.postgresql.classpath"/>
+  </path>
+  
+  <path id="webservice.runtime.production.module.classpath">
+    <pathelement location="${webservice.output.dir}"/>
+    <path refid="library.postgresql.classpath"/>
+  </path>
+  
+  <path id="webservice.module.classpath">
+    <path refid="${module.jdk.classpath.webservice}"/>
+    <pathelement location="${webservice.output.dir}"/>
+    <path refid="library.postgresql.classpath"/>
+  </path>
+  
+  <path id="webservice.runtime.module.classpath">
+    <pathelement location="${webservice.testoutput.dir}"/>
+    <pathelement location="${webservice.output.dir}"/>
+    <path refid="library.postgresql.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.webservice">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.webservice">
+    <patternset refid="excluded.from.module.webservice"/>
+  </patternset>
+  
+  <path id="webservice.module.sourcepath">
+    <dirset dir="${module.webservice.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.webservice" depends="compile.module.webservice.production,compile.module.webservice.tests" description="Compile module WebService"/>
+  
+  <target name="compile.module.webservice.production" depends="register.custom.compilers" description="Compile module WebService; production classes">
+    <mkdir dir="${webservice.output.dir}"/>
+    <javac2 destdir="${webservice.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.webservice}/javac">
+      <compilerarg line="${compiler.args.webservice}"/>
+      <bootclasspath refid="webservice.module.bootclasspath"/>
+      <classpath refid="webservice.module.production.classpath"/>
+      <src refid="webservice.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.webservice"/>
+    </javac2>
+    
+    <copy todir="${webservice.output.dir}">
+      <fileset dir="${module.webservice.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.webservice.tests" depends="register.custom.compilers,compile.module.webservice.production" description="compile module WebService; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.webservice" description="cleanup module">
+    <delete dir="${webservice.output.dir}"/>
+    <delete dir="${webservice.testoutput.dir}"/>
+  </target>
+</project>

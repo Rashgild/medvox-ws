@@ -1,0 +1,314 @@
+<html>
+<head>
+<title>WebServiceImpl.class</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(128,128,128); }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(204,120,50); }
+.s3 { color: rgb(106,135,89); }
+.s4 { color: rgb(104,151,187); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+WebServiceImpl.class</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">//</span><span class="s1"> 
+</span><span class="s0">// Source code recreated from a .class file by IntelliJ IDEA</span><span class="s1"> 
+</span><span class="s0">// (powered by Fernflower decompiler)</span><span class="s1"> 
+</span><span class="s0">//</span><span class="s1"> 
+ 
+</span><span class="s2">package </span><span class="s1">ru.web.service</span><span class="s2">;</span><span class="s1"> 
+ 
+</span><span class="s2">import </span><span class="s1">java.io.FileWriter</span><span class="s2">;</span><span class="s1"> 
+</span><span class="s2">import </span><span class="s1">java.io.IOException</span><span class="s2">;</span><span class="s1"> 
+</span><span class="s2">import </span><span class="s1">java.sql.ResultSet</span><span class="s2">;</span><span class="s1"> 
+</span><span class="s2">import </span><span class="s1">java.util.List</span><span class="s2">;</span><span class="s1"> 
+</span><span class="s2">import </span><span class="s1">java.util.logging.Logger</span><span class="s2">;</span><span class="s1"> 
+</span><span class="s2">import </span><span class="s1">javax.jws.WebMethod</span><span class="s2">;</span><span class="s1"> 
+</span><span class="s2">import </span><span class="s1">javax.jws.WebService</span><span class="s2">;</span><span class="s1"> 
+</span><span class="s2">import </span><span class="s1">ru.web.SQL.Sql_request</span><span class="s2">;</span><span class="s1"> 
+</span><span class="s2">import </span><span class="s1">ru.web.SQL.sql_connect</span><span class="s2">;</span><span class="s1"> 
+</span><span class="s2">import </span><span class="s1">ru.web.classes.AllInformation</span><span class="s2">;</span><span class="s1"> 
+</span><span class="s2">import </span><span class="s1">ru.web.classes.ArrayOfAllinformation</span><span class="s2">;</span><span class="s1"> 
+</span><span class="s2">import </span><span class="s1">ru.web.classes.ArrayOfDate</span><span class="s2">;</span><span class="s1"> 
+</span><span class="s2">import </span><span class="s1">ru.web.classes.ArrayOfDoctor</span><span class="s2">;</span><span class="s1"> 
+</span><span class="s2">import </span><span class="s1">ru.web.classes.ArrayOfPatient</span><span class="s2">;</span><span class="s1"> 
+</span><span class="s2">import </span><span class="s1">ru.web.classes.ArrayOfSpecialization</span><span class="s2">;</span><span class="s1"> 
+</span><span class="s2">import </span><span class="s1">ru.web.classes.ArrayOfTime</span><span class="s2">;</span><span class="s1"> 
+</span><span class="s2">import </span><span class="s1">ru.web.classes.Date</span><span class="s2">;</span><span class="s1"> 
+</span><span class="s2">import </span><span class="s1">ru.web.classes.Doctor</span><span class="s2">;</span><span class="s1"> 
+</span><span class="s2">import </span><span class="s1">ru.web.classes.Patient</span><span class="s2">;</span><span class="s1"> 
+</span><span class="s2">import </span><span class="s1">ru.web.classes.Specialization</span><span class="s2">;</span><span class="s1"> 
+</span><span class="s2">import </span><span class="s1">ru.web.classes.Time</span><span class="s2">;</span><span class="s1"> 
+</span><span class="s2">import </span><span class="s1">ru.web.service.IWebService</span><span class="s2">;</span><span class="s1"> 
+ 
+@WebService( 
+    endpointInterface = </span><span class="s3">&quot;ru.web.service.IWebService&quot;</span><span class="s1"> 
+) 
+</span><span class="s2">public class </span><span class="s1">WebServiceImpl </span><span class="s2">implements </span><span class="s1">IWebService { 
+    </span><span class="s2">private </span><span class="s1">Logger logger = Logger.getLogger(String.valueOf(WebServiceImpl.</span><span class="s2">class</span><span class="s1">))</span><span class="s2">;</span><span class="s1"> 
+    </span><span class="s2">public static int </span><span class="s1">tempid = </span><span class="s4">1</span><span class="s2">;</span><span class="s1"> 
+ 
+    </span><span class="s2">public </span><span class="s1">WebServiceImpl() { 
+    } 
+ 
+    @WebMethod 
+    </span><span class="s2">public </span><span class="s1">ArrayOfPatient getArrayOfPatient(Integer birthday) </span><span class="s2">throws </span><span class="s1">IOException { 
+        ArrayOfPatient arr = </span><span class="s2">new </span><span class="s1">ArrayOfPatient()</span><span class="s2">;</span><span class="s1"> 
+        List patients = arr.getPatients()</span><span class="s2">;</span><span class="s1"> 
+        ResultSet ResultSQLRequest = sql_connect.SQL_Select(Sql_request.SelectPatients(birthday))</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">new </span><span class="s1">Patient()</span><span class="s2">;</span><span class="s1"> 
+ 
+        </span><span class="s2">try </span><span class="s1">{ 
+            </span><span class="s2">while</span><span class="s1">(ResultSQLRequest.next()) { 
+                Patient patient = </span><span class="s2">new </span><span class="s1">Patient()</span><span class="s2">;</span><span class="s1"> 
+                patient.setId(Integer.valueOf(ResultSQLRequest.getInt(</span><span class="s3">&quot;id&quot;</span><span class="s1">)))</span><span class="s2">;</span><span class="s1"> 
+                patient.setLastname(ResultSQLRequest.getString(</span><span class="s3">&quot;lastname&quot;</span><span class="s1">))</span><span class="s2">;</span><span class="s1"> 
+                patient.setFirstname(ResultSQLRequest.getString(</span><span class="s3">&quot;firstname&quot;</span><span class="s1">))</span><span class="s2">;</span><span class="s1"> 
+                patient.setMiddlename(ResultSQLRequest.getString(</span><span class="s3">&quot;middlename&quot;</span><span class="s1">))</span><span class="s2">;</span><span class="s1"> 
+                patient.setBirthday(ResultSQLRequest.getString(</span><span class="s3">&quot;birthday&quot;</span><span class="s1">))</span><span class="s2">;</span><span class="s1"> 
+                patients.add(patient)</span><span class="s2">;</span><span class="s1"> 
+            } 
+        } </span><span class="s2">catch </span><span class="s1">(Exception var7) { 
+            </span><span class="s2">;</span><span class="s1"> 
+        } 
+ 
+        arr.setPatients(patients)</span><span class="s2">;</span><span class="s1"> 
+        WriteLog(</span><span class="s3">&quot;getArrayOfPatient() parametrs: &quot; </span><span class="s1">+ birthday + </span><span class="s3">&quot; return:&quot; </span><span class="s1">+ arr)</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">return </span><span class="s1">arr</span><span class="s2">;</span><span class="s1"> 
+    } 
+ 
+    @WebMethod 
+    </span><span class="s2">public </span><span class="s1">ArrayOfSpecialization getArrayOfSpecialization() </span><span class="s2">throws </span><span class="s1">IOException { 
+        ArrayOfSpecialization arr = </span><span class="s2">new </span><span class="s1">ArrayOfSpecialization()</span><span class="s2">;</span><span class="s1"> 
+        List specializations = arr.getSpecializations()</span><span class="s2">;</span><span class="s1"> 
+        ResultSet ResultSQLRequest = sql_connect.SQL_Select(Sql_request.SelectSpecialization())</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">new </span><span class="s1">Specialization()</span><span class="s2">;</span><span class="s1"> 
+ 
+        </span><span class="s2">try </span><span class="s1">{ 
+            </span><span class="s2">while</span><span class="s1">(ResultSQLRequest.next()) { 
+                Specialization spec = </span><span class="s2">new </span><span class="s1">Specialization()</span><span class="s2">;</span><span class="s1"> 
+                spec.setId(Integer.valueOf(ResultSQLRequest.getInt(</span><span class="s3">&quot;id&quot;</span><span class="s1">)))</span><span class="s2">;</span><span class="s1"> 
+                spec.setName(ResultSQLRequest.getString(</span><span class="s3">&quot;name&quot;</span><span class="s1">))</span><span class="s2">;</span><span class="s1"> 
+                specializations.add(spec)</span><span class="s2">;</span><span class="s1"> 
+            } 
+        } </span><span class="s2">catch </span><span class="s1">(Exception var6) { 
+            </span><span class="s2">;</span><span class="s1"> 
+        } 
+ 
+        arr.setSpecializations(specializations)</span><span class="s2">;</span><span class="s1"> 
+        WriteLog(</span><span class="s3">&quot;getArrayOfSpecialization() return:&quot; </span><span class="s1">+ arr)</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">return </span><span class="s1">arr</span><span class="s2">;</span><span class="s1"> 
+    } 
+ 
+    @WebMethod 
+    </span><span class="s2">public </span><span class="s1">ArrayOfDoctor getArrayOfDoctor(Integer id_specialization) </span><span class="s2">throws </span><span class="s1">IOException { 
+        ArrayOfDoctor arr = </span><span class="s2">new </span><span class="s1">ArrayOfDoctor()</span><span class="s2">;</span><span class="s1"> 
+        List doctors = arr.getDoctors()</span><span class="s2">;</span><span class="s1"> 
+        ResultSet ResultSQLRequest = sql_connect.SQL_Select(Sql_request.SelectDoctor(id_specialization))</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">new </span><span class="s1">Doctor()</span><span class="s2">;</span><span class="s1"> 
+ 
+        </span><span class="s2">try </span><span class="s1">{ 
+            </span><span class="s2">while</span><span class="s1">(ResultSQLRequest.next()) { 
+                Doctor doc = </span><span class="s2">new </span><span class="s1">Doctor()</span><span class="s2">;</span><span class="s1"> 
+                doc.setId(Integer.valueOf(ResultSQLRequest.getInt(</span><span class="s3">&quot;id&quot;</span><span class="s1">)))</span><span class="s2">;</span><span class="s1"> 
+                doc.setName(ResultSQLRequest.getString(</span><span class="s3">&quot;name&quot;</span><span class="s1">))</span><span class="s2">;</span><span class="s1"> 
+                doc.setLastname(ResultSQLRequest.getString(</span><span class="s3">&quot;lastname&quot;</span><span class="s1">))</span><span class="s2">;</span><span class="s1"> 
+                doc.setFirstname(ResultSQLRequest.getString(</span><span class="s3">&quot;firstname&quot;</span><span class="s1">))</span><span class="s2">;</span><span class="s1"> 
+                doc.setMiddlename(ResultSQLRequest.getString(</span><span class="s3">&quot;middlename&quot;</span><span class="s1">))</span><span class="s2">;</span><span class="s1"> 
+                doctors.add(doc)</span><span class="s2">;</span><span class="s1"> 
+            } 
+        } </span><span class="s2">catch </span><span class="s1">(Exception var7) { 
+            </span><span class="s2">;</span><span class="s1"> 
+        } 
+ 
+        arr.setDoctors(doctors)</span><span class="s2">;</span><span class="s1"> 
+        WriteLog(</span><span class="s3">&quot;getArrayOfDoctor() parametrs:&quot; </span><span class="s1">+ id_specialization + </span><span class="s3">&quot; return:&quot; </span><span class="s1">+ arr)</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">return </span><span class="s1">arr</span><span class="s2">;</span><span class="s1"> 
+    } 
+ 
+    @WebMethod 
+    </span><span class="s2">public </span><span class="s1">ArrayOfDate getArrayOfDatesFirst(Integer id_specialization) </span><span class="s2">throws </span><span class="s1">IOException { 
+        ArrayOfDate arr = </span><span class="s2">new </span><span class="s1">ArrayOfDate()</span><span class="s2">;</span><span class="s1"> 
+        List dates = arr.getDates()</span><span class="s2">;</span><span class="s1"> 
+        ResultSet ResultSQLRequest = sql_connect.SQL_Select(Sql_request.SelectDateFirst(id_specialization))</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">new </span><span class="s1">Date()</span><span class="s2">;</span><span class="s1"> 
+ 
+        </span><span class="s2">try </span><span class="s1">{ 
+            </span><span class="s2">while</span><span class="s1">(ResultSQLRequest.next()) { 
+                Date dat = </span><span class="s2">new </span><span class="s1">Date()</span><span class="s2">;</span><span class="s1"> 
+                dat.setId(Integer.valueOf(ResultSQLRequest.getInt(</span><span class="s3">&quot;id&quot;</span><span class="s1">)))</span><span class="s2">;</span><span class="s1"> 
+                dat.setDate(ResultSQLRequest.getString(</span><span class="s3">&quot;date&quot;</span><span class="s1">))</span><span class="s2">;</span><span class="s1"> 
+                dates.add(dat)</span><span class="s2">;</span><span class="s1"> 
+            } 
+        } </span><span class="s2">catch </span><span class="s1">(Exception var7) { 
+            </span><span class="s2">;</span><span class="s1"> 
+        } 
+ 
+        arr.setDates(dates)</span><span class="s2">;</span><span class="s1"> 
+        WriteLog(</span><span class="s3">&quot;getArrayOfDatesFirst() parametrs:&quot; </span><span class="s1">+ id_specialization + </span><span class="s3">&quot; return:&quot; </span><span class="s1">+ arr)</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">return </span><span class="s1">arr</span><span class="s2">;</span><span class="s1"> 
+    } 
+ 
+    @WebMethod 
+    </span><span class="s2">public </span><span class="s1">ArrayOfDate getArrayOfDatesSecond(Integer id_specialization</span><span class="s2">, </span><span class="s1">Integer id_doctor) </span><span class="s2">throws </span><span class="s1">IOException { 
+        ArrayOfDate arr = </span><span class="s2">new </span><span class="s1">ArrayOfDate()</span><span class="s2">;</span><span class="s1"> 
+        List dates = arr.getDates()</span><span class="s2">;</span><span class="s1"> 
+        ResultSet ResultSQLRequest = sql_connect.SQL_Select(Sql_request.SelectDateSecond(id_doctor</span><span class="s2">, </span><span class="s1">id_specialization))</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">new </span><span class="s1">Date()</span><span class="s2">;</span><span class="s1"> 
+ 
+        </span><span class="s2">try </span><span class="s1">{ 
+            </span><span class="s2">while</span><span class="s1">(ResultSQLRequest.next()) { 
+                Date dat = </span><span class="s2">new </span><span class="s1">Date()</span><span class="s2">;</span><span class="s1"> 
+                dat.setId(Integer.valueOf(ResultSQLRequest.getInt(</span><span class="s3">&quot;id&quot;</span><span class="s1">)))</span><span class="s2">;</span><span class="s1"> 
+                dat.setDate(ResultSQLRequest.getString(</span><span class="s3">&quot;date&quot;</span><span class="s1">))</span><span class="s2">;</span><span class="s1"> 
+                dates.add(dat)</span><span class="s2">;</span><span class="s1"> 
+            } 
+        } </span><span class="s2">catch </span><span class="s1">(Exception var8) { 
+            </span><span class="s2">;</span><span class="s1"> 
+        } 
+ 
+        arr.setDates(dates)</span><span class="s2">;</span><span class="s1"> 
+        WriteLog(</span><span class="s3">&quot;getArrayOfDatesSecond() parametrs:&quot; </span><span class="s1">+ id_specialization + </span><span class="s3">&quot;, &quot; </span><span class="s1">+ id_doctor + </span><span class="s3">&quot; return:&quot; </span><span class="s1">+ arr)</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">return </span><span class="s1">arr</span><span class="s2">;</span><span class="s1"> 
+    } 
+ 
+    @WebMethod 
+    </span><span class="s2">public </span><span class="s1">ArrayOfTime getArrayOfTimesFirst(Integer id_specialization</span><span class="s2">, </span><span class="s1">Integer id_date) </span><span class="s2">throws </span><span class="s1">IOException { 
+        ArrayOfTime arr = </span><span class="s2">new </span><span class="s1">ArrayOfTime()</span><span class="s2">;</span><span class="s1"> 
+        List times = arr.getTimes()</span><span class="s2">;</span><span class="s1"> 
+        ResultSet ResultSQLRequest = sql_connect.SQL_Select(Sql_request.SelectTimeFirst(id_specialization</span><span class="s2">, </span><span class="s1">id_date))</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">new </span><span class="s1">Time()</span><span class="s2">;</span><span class="s1"> 
+ 
+        </span><span class="s2">try </span><span class="s1">{ 
+            </span><span class="s2">while</span><span class="s1">(ResultSQLRequest.next()) { 
+                Time tim = </span><span class="s2">new </span><span class="s1">Time()</span><span class="s2">;</span><span class="s1"> 
+                tim.setId(Integer.valueOf(ResultSQLRequest.getInt(</span><span class="s3">&quot;id&quot;</span><span class="s1">)))</span><span class="s2">;</span><span class="s1"> 
+                tim.setTime(ResultSQLRequest.getString(</span><span class="s3">&quot;time&quot;</span><span class="s1">))</span><span class="s2">;</span><span class="s1"> 
+                times.add(tim)</span><span class="s2">;</span><span class="s1"> 
+            } 
+        } </span><span class="s2">catch </span><span class="s1">(Exception var8) { 
+            </span><span class="s2">;</span><span class="s1"> 
+        } 
+ 
+        WriteLog(</span><span class="s3">&quot;getArrayOfTimesFirst() parametrs:&quot; </span><span class="s1">+ id_specialization + </span><span class="s3">&quot;, &quot; </span><span class="s1">+ id_date + </span><span class="s3">&quot; return:&quot; </span><span class="s1">+ arr)</span><span class="s2">;</span><span class="s1"> 
+        arr.setTimes(times)</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">return </span><span class="s1">arr</span><span class="s2">;</span><span class="s1"> 
+    } 
+ 
+    @WebMethod 
+    </span><span class="s2">public </span><span class="s1">ArrayOfTime getArrayOfTimesSecond(Integer id_date) </span><span class="s2">throws </span><span class="s1">IOException { 
+        ArrayOfTime arr = </span><span class="s2">new </span><span class="s1">ArrayOfTime()</span><span class="s2">;</span><span class="s1"> 
+        List times = arr.getTimes()</span><span class="s2">;</span><span class="s1"> 
+        ResultSet ResultSQLRequest = sql_connect.SQL_Select(Sql_request.SelectTimeSecond(id_date))</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">new </span><span class="s1">Time()</span><span class="s2">;</span><span class="s1"> 
+ 
+        </span><span class="s2">try </span><span class="s1">{ 
+            </span><span class="s2">while</span><span class="s1">(ResultSQLRequest.next()) { 
+                Time tim = </span><span class="s2">new </span><span class="s1">Time()</span><span class="s2">;</span><span class="s1"> 
+                tim.setId(Integer.valueOf(ResultSQLRequest.getInt(</span><span class="s3">&quot;id&quot;</span><span class="s1">)))</span><span class="s2">;</span><span class="s1"> 
+                tim.setTime(ResultSQLRequest.getString(</span><span class="s3">&quot;time&quot;</span><span class="s1">))</span><span class="s2">;</span><span class="s1"> 
+                times.add(tim)</span><span class="s2">;</span><span class="s1"> 
+            } 
+        } </span><span class="s2">catch </span><span class="s1">(Exception var7) { 
+            </span><span class="s2">;</span><span class="s1"> 
+        } 
+ 
+        arr.setTimes(times)</span><span class="s2">;</span><span class="s1"> 
+        WriteLog(</span><span class="s3">&quot;getArrayOfTimesSecond() parametrs:&quot; </span><span class="s1">+ id_date + </span><span class="s3">&quot; return:&quot; </span><span class="s1">+ arr)</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">return </span><span class="s1">arr</span><span class="s2">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s2">public </span><span class="s1">String getAllInformation(Integer id_doc</span><span class="s2">, </span><span class="s1">Integer id_spec</span><span class="s2">, </span><span class="s1">Integer id_date</span><span class="s2">, </span><span class="s1">Integer id_time) </span><span class="s2">throws </span><span class="s1">IOException { 
+        ResultSet ResultSQLRequest = sql_connect.SQL_Select(Sql_request.SelectAllInformation(id_spec</span><span class="s2">, </span><span class="s1">id_date</span><span class="s2">, </span><span class="s1">id_time))</span><span class="s2">;</span><span class="s1"> 
+        String SQL_res = </span><span class="s3">&quot;&quot;</span><span class="s2">;</span><span class="s1"> 
+ 
+        </span><span class="s2">try </span><span class="s1">{ 
+            </span><span class="s2">while</span><span class="s1">(ResultSQLRequest.next()) { 
+                SQL_res = SQL_res + ResultSQLRequest.getString(</span><span class="s3">&quot;name&quot;</span><span class="s1">) + </span><span class="s3">&quot; &quot; </span><span class="s1">+ ResultSQLRequest.getString(</span><span class="s3">&quot;lastname&quot;</span><span class="s1">) + </span><span class="s3">&quot; &quot; </span><span class="s1">+ ResultSQLRequest.getString(</span><span class="s3">&quot;firstname&quot;</span><span class="s1">) + </span><span class="s3">&quot; &quot; </span><span class="s1">+ ResultSQLRequest.getString(</span><span class="s3">&quot;middlename&quot;</span><span class="s1">) + </span><span class="s3">&quot; на &quot; </span><span class="s1">+ ResultSQLRequest.getString(</span><span class="s3">&quot;date&quot;</span><span class="s1">) + </span><span class="s3">&quot; &quot; </span><span class="s1">+ ResultSQLRequest.getString(</span><span class="s3">&quot;time&quot;</span><span class="s1">)</span><span class="s2">;</span><span class="s1"> 
+            } 
+        } </span><span class="s2">catch </span><span class="s1">(Exception var8) { 
+            </span><span class="s2">;</span><span class="s1"> 
+        } 
+ 
+        WriteLog(</span><span class="s3">&quot;getAllInformation() parametrs:&quot; </span><span class="s1">+ id_doc + </span><span class="s3">&quot;, &quot; </span><span class="s1">+ id_spec + </span><span class="s3">&quot;, &quot; </span><span class="s1">+ id_date + </span><span class="s3">&quot;, &quot; </span><span class="s1">+ id_time + </span><span class="s3">&quot; return:&quot; </span><span class="s1">+ SQL_res)</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">return </span><span class="s1">SQL_res</span><span class="s2">;</span><span class="s1"> 
+    } 
+ 
+    @WebMethod 
+    </span><span class="s2">public </span><span class="s1">ArrayOfAllinformation getArrayOfAllinformation(Integer id_doc</span><span class="s2">, </span><span class="s1">Integer id_spec</span><span class="s2">, </span><span class="s1">Integer id_date</span><span class="s2">, </span><span class="s1">Integer id_time) </span><span class="s2">throws </span><span class="s1">IOException { 
+        ArrayOfAllinformation arr = </span><span class="s2">new </span><span class="s1">ArrayOfAllinformation()</span><span class="s2">;</span><span class="s1"> 
+        List allinfs = arr.getAllinformation()</span><span class="s2">;</span><span class="s1"> 
+        ResultSet ResultSQLRequest = sql_connect.SQL_Select(Sql_request.SelectAllInformation(id_spec</span><span class="s2">, </span><span class="s1">id_date</span><span class="s2">, </span><span class="s1">id_time))</span><span class="s2">;</span><span class="s1"> 
+        String SQL_res = </span><span class="s3">&quot;&quot;</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">new </span><span class="s1">AllInformation()</span><span class="s2">;</span><span class="s1"> 
+ 
+        </span><span class="s2">try </span><span class="s1">{ 
+            </span><span class="s2">while</span><span class="s1">(ResultSQLRequest.next()) { 
+                AllInformation alinf = </span><span class="s2">new </span><span class="s1">AllInformation()</span><span class="s2">;</span><span class="s1"> 
+                alinf.setName(ResultSQLRequest.getString(</span><span class="s3">&quot;name&quot;</span><span class="s1">))</span><span class="s2">;</span><span class="s1"> 
+                alinf.setLastname(ResultSQLRequest.getString(</span><span class="s3">&quot;lastname&quot;</span><span class="s1">))</span><span class="s2">;</span><span class="s1"> 
+                alinf.setFirstname(ResultSQLRequest.getString(</span><span class="s3">&quot;firstname&quot;</span><span class="s1">))</span><span class="s2">;</span><span class="s1"> 
+                alinf.setMiddlename(ResultSQLRequest.getString(</span><span class="s3">&quot;middlename&quot;</span><span class="s1">))</span><span class="s2">;</span><span class="s1"> 
+                alinf.setDate(ResultSQLRequest.getString(</span><span class="s3">&quot;date&quot;</span><span class="s1">))</span><span class="s2">;</span><span class="s1"> 
+                alinf.setTime(ResultSQLRequest.getString(</span><span class="s3">&quot;time&quot;</span><span class="s1">))</span><span class="s2">;</span><span class="s1"> 
+                allinfs.add(alinf)</span><span class="s2">;</span><span class="s1"> 
+            } 
+        } </span><span class="s2">catch </span><span class="s1">(Exception var11) { 
+            </span><span class="s2">;</span><span class="s1"> 
+        } 
+ 
+        arr.setAllinfomation(allinfs)</span><span class="s2">;</span><span class="s1"> 
+        WriteLog(</span><span class="s3">&quot;getArrayOfAllinformation() parametrs:&quot; </span><span class="s1">+ id_doc + </span><span class="s3">&quot;, &quot; </span><span class="s1">+ id_spec + </span><span class="s3">&quot;, &quot; </span><span class="s1">+ id_date + </span><span class="s3">&quot;, &quot; </span><span class="s1">+ id_time + </span><span class="s3">&quot; return:&quot; </span><span class="s1">+ arr)</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">return </span><span class="s1">arr</span><span class="s2">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s2">public int </span><span class="s1">setPatientRecord(Integer id_patient</span><span class="s2">, </span><span class="s1">Integer id_time) </span><span class="s2">throws </span><span class="s1">IOException { 
+        ResultSet res = sql_connect.SQL_UpdIns(Sql_request.UpdatePatient(id_patient</span><span class="s2">, </span><span class="s1">id_time))</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">int </span><span class="s1">res_str = </span><span class="s4">0</span><span class="s2">;</span><span class="s1"> 
+ 
+        </span><span class="s2">try </span><span class="s1">{ 
+            </span><span class="s2">while</span><span class="s1">(res.next()) { 
+                res_str = res.getInt(</span><span class="s3">&quot;id&quot;</span><span class="s1">)</span><span class="s2">;</span><span class="s1"> 
+            } 
+        } </span><span class="s2">catch </span><span class="s1">(Exception var6) { 
+            </span><span class="s2">;</span><span class="s1"> 
+        } 
+ 
+        WriteLog(</span><span class="s3">&quot;setPatientRecord() parametrs:&quot; </span><span class="s1">+ id_patient + </span><span class="s3">&quot;, &quot; </span><span class="s1">+ id_time + </span><span class="s3">&quot; return:&quot; </span><span class="s1">+ res_str)</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">return </span><span class="s1">res_str</span><span class="s2">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s2">public int </span><span class="s1">CheckTimeCalendar(Integer id_time) </span><span class="s2">throws </span><span class="s1">IOException { 
+        ResultSet res = sql_connect.SQL_Select(Sql_request.CheckPatientEmpty(id_time))</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">int </span><span class="s1">res_str = </span><span class="s4">0</span><span class="s2">;</span><span class="s1"> 
+ 
+        </span><span class="s2">try </span><span class="s1">{ 
+            </span><span class="s2">while</span><span class="s1">(res.next()) { 
+                res_str = res.getInt(</span><span class="s3">&quot;prepatient_id&quot;</span><span class="s1">)</span><span class="s2">;</span><span class="s1"> 
+            } 
+        } </span><span class="s2">catch </span><span class="s1">(Exception var5) { 
+            </span><span class="s2">;</span><span class="s1"> 
+        } 
+ 
+        WriteLog(</span><span class="s3">&quot;CheckTimeCalendar() parametrs:&quot; </span><span class="s1">+ id_time + </span><span class="s3">&quot; return:&quot; </span><span class="s1">+ res_str)</span><span class="s2">;</span><span class="s1"> 
+        </span><span class="s2">return </span><span class="s1">res_str</span><span class="s2">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s2">public static void </span><span class="s1">WriteLog(String S) </span><span class="s2">throws </span><span class="s1">IOException { 
+        FileWriter wr = </span><span class="s2">new </span><span class="s1">FileWriter(</span><span class="s3">&quot;log.txt&quot;</span><span class="s2">, true</span><span class="s1">)</span><span class="s2">;</span><span class="s1"> 
+        wr.append((</span><span class="s2">new </span><span class="s1">java.util.Date()).toString() + </span><span class="s3">&quot; &quot; </span><span class="s1">+ S)</span><span class="s2">;</span><span class="s1"> 
+        wr.append(</span><span class="s3">&quot;</span><span class="s2">\n</span><span class="s3">&quot;</span><span class="s1">)</span><span class="s2">;</span><span class="s1"> 
+        wr.flush()</span><span class="s2">;</span><span class="s1"> 
+        wr.close()</span><span class="s2">;</span><span class="s1"> 
+    } 
+} 
+</span></pre>
+</body>
+</html>
