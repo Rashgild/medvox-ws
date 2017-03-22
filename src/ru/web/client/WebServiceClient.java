@@ -7,6 +7,7 @@ package ru.web.client;
 import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.namespace.QName;
@@ -26,10 +27,10 @@ public class WebServiceClient {
           final IWebService start = service.getPort(IWebService.class);
     }*/
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, SQLException {
 
-      URL url = new URL("http://192.168.7.19:1986/webservice/start?wsdl");
-      //  URL url = new URL("http://192.168.2.45:1986/webservice/start?wsdl");
+    //  URL url = new URL("http://192.168.7.19:1986/webservice/start?wsdl");
+        URL url = new URL("http://192.168.2.45:1986/webservice/start?wsdl");
         QName qname = new QName("http://service.web.ru/", "WebServiceImplService");
         Service service = Service.create(url, qname);
         final IWebService start = service.getPort(IWebService.class);

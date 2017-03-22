@@ -8,13 +8,7 @@ import java.io.IOException;
  */
 public class Sql_request {
 
-    public static String URL[];
-    public  static  String Name[];
-    public  static String Pwd[];
-    public  static  String Ip[];
-    public  static String Port[];
-    public static String log[];
-public static int logger=0;
+//public static int logger=0;
 
     public  static String SelectSpecialization(){
         String req = "select vwf.id ,vwf.name\n" +
@@ -70,22 +64,6 @@ public static int logger=0;
 
     public  static  String SelectDateSecond(Integer id_doctor, Integer id_specialization)
     {
-      /*  String req = "select  max(wcd.id) as id, to_char(wcd.calendardate,'dd.mm.yyyy') as date\n" +
-                " from workCalendar wc \n" +
-                " left join workcalendarday wcd on wcd.workcalendar_id=wc.id\n" +
-                " left join workcalendartime wct on wct.workcalendarday_id=wcd.id\n" +
-                " left join workfunction wf on wf.id=wc.workfunction_id\n" +
-                " left join vocworkfunction vwf on vwf.id=wf.workfunction_id\n" +
-                " where \n" +
-                " wcd.calendardate>=current_date\n" +
-                "and wct.medCase_id is null and wct.prepatient_id is null " +
-                "and (wct.prepatientinfo is null or wct.prepatientinfo='') \n" +
-                "and wct.reserveType_id is null\n" +
-                "and wf.id= \n" +id_doctor+  //поиск по сотруднику
-                "and  vwf.id= \n"+id_specialization+ //поиск по специализации
-                "group by wcd.calendardate\n" +
-                "order by wcd.calendardate";*/
-
       String req = "select  max(wcd.id) as id, to_char(wcd.calendardate,'dd.mm.yyyy') as date\n" +
               "                 from workCalendar wc \n" +
               "                 left join workcalendarday wcd on wcd.workcalendar_id=wc.id\n" +
@@ -117,7 +95,6 @@ public static int logger=0;
                 "left join vocworkfunction vwf on vwf.id=wf.workfunction_id\n" +
                 "where \n" +
                 "wct.workCalendarDay_id = \n" + id_date +
-              //  "--vwf.id='35' and wcd.calendardate = (select calendardate from workcalendarday where id ='127095') —Поиск по специальностям и дню\n" +
                 "and wct.medCase_id is null and wct.prepatient_id is null and (wct.prepatientinfo is null or wct.prepatientinfo='') and wct.reserveType_id is null\n" +
                 "and (wcd.calendardate>current_date or (wcd.calendardate=current_date and wct.timefrom> current_time)) \n" +
                 "group by wct.timeFrom\n" +
@@ -127,32 +104,11 @@ public static int logger=0;
 
     public  static  String SelectAllInformation(Integer id_time)
     {
-      /*  String req = "select vwf.name, p.lastname, p.firstname, p.middlename,to_char(wcd.calendardate,'dd.mm.yyyy') as date ,cast(wct.timeFrom as varchar(5)) as time\n" +
-                "from WorkFunction as wf \n" +
-                "--left join  WorkCalendarTime as wdd\n" +
-                "left join Worker as w on w.id=wf.worker_id\n" +
-                "left join Patient as p on p.id=w.person_id\n" +
-                "inner join VocWorkFunction vwf on vwf.id=wf.workFunction_id\n" +
-                "left join WorkCalendar wc on wc.workFunction_id=wf.id\n" +
-                "left join mislpu mlGr on mlGr.id=wf.lpu_id\n" +
-                "left join workcalendarday wcd on wcd.workcalendar_id=wc.id\n" +
-                "left join workcalendartime wct on wct.workcalendarday_id=wcd.id\n" +
-                "where wc.id is not null\n" +
-                "and wf.group_id is null \n" +
-                "and (wf.archival is null or wf.archival='0')\n" +
-                "and (wf.isnoviewremoteuser  ='0' or wf.isnoviewremoteuser is null)\n" +
-                "and coalesce(w.lpu_id,wf.lpu_id)=180\n" +
-                //"and vwf.id  = " +id_spec+   //13
-                //"and wf.id = " +id_doc+ //1364
-                //"and wcd.id = " +id_date+ //103119
-                "and wct.id = "+id_time; //2946206*/
-
         String req = "select vwf.name, \n" +
                 "case when wf.dtype ='GroupWorkFunction' then wf.groupname else p.lastname end\n" +
                 ",coalesce (p.firstname,'') as \"firstname\"\n" +
                 ",coalesce (p.middlename,'')as \"middlename\",to_char(wcd.calendardate,'dd.mm.yyyy') as date ,cast(wct.timeFrom as varchar(5)) as time\n" +
                 "from WorkFunction as wf  \n" +
-                //"--left join  WorkCalendarTime as wdd \n" +
                 "left join Worker as w on w.id=wf.worker_id \n" +
                 "left join Patient as p on p.id=w.person_id \n" +
                 "inner join VocWorkFunction vwf on vwf.id=wf.workFunction_id \n" +
@@ -165,10 +121,7 @@ public static int logger=0;
                 "and (wf.archival is null or wf.archival='0') \n" +
                 "and (wf.isnoviewremoteuser  ='0' or wf.isnoviewremoteuser is null) \n" +
                 "and coalesce(w.lpu_id,wf.lpu_id)=180 \n" +
-                //"--and vwf.id  =   +id_spec+   //13\n" +
-                //"--and wf.id =   +id_doc+ //1364\n" +
-                //"--and wcd.id =   +id_date+ //103119\n" +
-                "and wct.id ="+id_time; //2946206";
+                "and wct.id ="+id_time;
 
 
         return  req;
@@ -176,27 +129,12 @@ public static int logger=0;
 
     public  static  String SelectDateFirst(Integer id_specialization)
     {
-       /* String req = "select  max(wcd.id) as id, to_char(wcd.calendardate,'dd.mm.yyyy') as date\n" +
-                " from workCalendar wc \n" +
-                " left join workcalendarday wcd on wcd.workcalendar_id=wc.id\n" +
-                " left join workcalendartime wct on wct.workcalendarday_id=wcd.id\n" +
-                " left join workfunction wf on wf.id=wc.workfunction_id\n" +
-                " left join vocworkfunction vwf on vwf.id=wf.workfunction_id\n" +
-                " where \n" +
-                " wcd.calendardate>=current_date\n" +
-                "and wct.medCase_id is null and wct.prepatient_id is null " +
-                "and (wct.prepatientinfo is null or wct.prepatientinfo='') \n" +
-                "and wct.reserveType_id is null\n" +
-                //"and wf.id= \n" +id_doctor+  //поиск по сотруднику
-                "and  vwf.id= \n"+id_specialization+ //поиск по специализации
-                "group by wcd.calendardate\n" +
-                "order by wcd.calendardate";*/
-
        String req ="select  max(wcd.id) as id, to_char(wcd.calendardate,'dd.mm.yyyy') as date\n" +
                "                 from workCalendar wc \n" +
                "                 left join workcalendarday wcd on wcd.workcalendar_id=wc.id\n" +
                "                 left join workcalendartime wct on wct.workcalendarday_id=wcd.id\n" +
                "                 left join workfunction wf on wf.id=wc.workfunction_id\n" +
+               "                left join worker w on w.id=wf.worker_id\n"+
                "                 left join vocworkfunction vwf on vwf.id=wf.workfunction_id\n" +
                "                 where \n" +
                "                 wcd.calendardate>=current_date\n" +
@@ -205,6 +143,7 @@ public static int logger=0;
                "                and wct.reserveType_id is null\n" +
                "                and case when wcd.calendardate=current_date then case when wct.timefrom > current_time then 1 else 0 end else 1 end =1\n" +
                "                and  vwf.id= "+id_specialization+ //поиск по специализации
+               " and w.lpu_id=180 "+
                "                group by wcd.calendardate\n" +
                "                having count (wct.id)>0\n" +
                "                order by wcd.calendardate;";
@@ -222,11 +161,13 @@ public static int logger=0;
                 "     left join WorkCalendarDay wcd on wcd.id=wct.workCalendarDay_id\n" +
                 "     left join workcalendar wc on wc.id=wcd.workcalendar_id\n" +
                 "     left join workfunction wf on wf.id=wc.workfunction_id\n" +
+                "     left join worker w on w.id=wf.worker_id\n"+
                 "     left join vocworkfunction vwf on vwf.id=wf.workfunction_id\n" +
                 "     where \n" +
                 "    vwf.id= " + id_specialization+
-                "  and wcd.calendardate = (select calendardate from workcalendarday where id = "+id_date+")"+
-                "    and wct.medCase_id is null and wct.prepatient_id is null and (wct.prepatientinfo is null or wct.prepatientinfo='') and wct.reserveType_id is null\n" +
+                " and w.lpu_id=180\n"+
+                " and wcd.calendardate = (select calendardate from workcalendarday where id = "+id_date+")"+
+                " and wct.medCase_id is null and wct.prepatient_id is null and (wct.prepatientinfo is null or wct.prepatientinfo='') and wct.reserveType_id is null\n" +
                 "and (wcd.calendardate>current_date or (wcd.calendardate=current_date and wct.timefrom> current_time)) \n" +
                 "group by wct.timeFrom\n" +
                 "     order by wct.timeFrom";
@@ -252,6 +193,7 @@ public static int logger=0;
                 " createtimeprerecord= current_time,\n" +
                 " prepatient_id = " +patient_id+
                 " where id= " +time_id+
+                " and prepatient_id is null "+
                 "        returning id";
         return req;
     }
