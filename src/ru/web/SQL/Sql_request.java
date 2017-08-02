@@ -8,31 +8,85 @@ import java.io.IOException;
  */
 public class Sql_request {
 
-//public static int logger=0;
 
-    public  static String SelectSpecialization(){
+    private static String reserve_type="";
+    private static String lpu_id = "";
+
+    private static void LpuIdAndReserveType(Integer id){
+        if(id==180){
+            lpu_id = "= 180 ";
+            reserve_type ="is null ";
+        }
+
+        if(id==246){
+            lpu_id = "in(180,246)";
+            reserve_type ="=3";
+        }
+    }
+
+    public static String SelectSpecialization(Integer id){
+
+        LpuIdAndReserveType(id);
+
         String req = "select vwf.id ,vwf.name\n" +
-                "from WorkFunction as wf \n" +
+    "                from WorkFunction as wf \n" +
+    "                left join Worker as w on w.id=wf.worker_id\n" +
+    "                left join Patient as p on p.id=w.person_id\n" +
+    "                inner join VocWorkFunction vwf on vwf.id=wf.workFunction_id\n" +
+    "                left join WorkCalendar wc on wc.workFunction_id=wf.id\n" +
+    "                left join workcalendarday wcd on wcd.workcalendar_id=wc.id\n" +
+    "                left join workcalendartime wct on wct.workCalendarDay_id=wcd.id\n" +
+    "                left join mislpu mlGr on mlGr.id=wf.lpu_id\n" +
+    "                where wc.id is not null\n" +
+    "                and wcd.calendardate>=current_date\n" +
+    "                and wf.group_id is null \n" +
+    "                and (wf.archival is null or wf.archival='0')\n" +
+    "                and (wf.isnoviewremoteuser  ='0' or wf.isnoviewremoteuser is null)\n" +
+    "                and coalesce(w.lpu_id,wf.lpu_id) "+lpu_id+" \n"+
+    "                and wct.medCase_id is null and wct.prepatient_id is null \n" +
+    "                and (wct.prepatientinfo is null or wct.prepatientinfo='') \n" +
+    "                and wct.reserveType_id "+reserve_type+" \n"+
+    "                group by vwf.id, vwf.name\n" +
+    "                having count(wct.id)>0;";
+        return req;
+
+    }
+
+    public  static String SelectDoctor(Integer id_spec, Integer codeId) {
+        LpuIdAndReserveType(codeId);
+
+        String req= "SELECT\n" +
+                "wf.id , vwf.name, case when wf.dtype='PersonalWorkFunction' then p.lastname\n" +
+                "else wf.groupname end as lastname,\n" +
+                "coalesce(p.firstname,'') as firstname, coalesce(p.middlename,'') as middlename\n" +
+                "from WorkFunction as wf\n" +
                 "left join Worker as w on w.id=wf.worker_id\n" +
                 "left join Patient as p on p.id=w.person_id\n" +
                 "inner join VocWorkFunction vwf on vwf.id=wf.workFunction_id\n" +
                 "left join WorkCalendar wc on wc.workFunction_id=wf.id\n" +
+                "left join mislpu mlGr on mlGr.id=wf.lpu_id\n" +
                 "left join workcalendarday wcd on wcd.workcalendar_id=wc.id\n" +
                 "left join workcalendartime wct on wct.workCalendarDay_id=wcd.id\n" +
-                "left join mislpu mlGr on mlGr.id=wf.lpu_id\n" +
                 "where wc.id is not null\n" +
-                "and wcd.calendardate>=current_date\n" +
-                "and wf.group_id is null \n" +
+                "and wf.group_id is null\n" +
                 "and (wf.archival is null or wf.archival='0')\n" +
                 "and (wf.isnoviewremoteuser  ='0' or wf.isnoviewremoteuser is null)\n" +
-                "and coalesce(w.lpu_id,wf.lpu_id)=180\n" +
-                "and wct.medCase_id is null and wct.prepatient_id is null and (wct.prepatientinfo is null or wct.prepatientinfo='') and wct.reserveType_id is null\n" +
-                "group by vwf.id, vwf.name\n" +
+                "and coalesce(wf.lpu_id,w.lpu_id) "+lpu_id+" \n" +
+                "and wct.prepatient_id is null\n" +
+                "and (wct.prepatientinfo is null or wct.prepatientinfo='') \n" +
+                "and wct.reserveType_id "+reserve_type+" \n"+
+                "and wct.medCase_id is null\n" +
+                "and wct.createprerecord is null\n" +
+                "and wcd.calendardate>=current_date\n" +
+                "and vwf.id = " +id_spec+" \n"+
+                "group by wf.id, vwf.name, p.lastname ,p.firstname,p.middlename\n" +
                 "having count(wct.id)>0";
+
+        System.out.println(req);
         return req;
     }
 
-    public  static String SelectDoctor(Integer id_spec){
+    /*public  static String SelectDoctor(Integer id_spec){
         String req= "SELECT\n" +
                 "wf.id , vwf.name, case when wf.dtype='PersonalWorkFunction' then p.lastname\n" +
                 "else wf.groupname end as lastname,\n" +
@@ -60,10 +114,11 @@ public class Sql_request {
                 "group by wf.id, vwf.name, p.lastname ,p.firstname,p.middlename\n" +
                 "having count(wct.id)>0";
         return req;
-    }
+    }*/
 
-    public  static  String SelectDateSecond(Integer id_doctor, Integer id_specialization)
+    public  static  String SelectDateSecond(Integer id_doctor, Integer id_specialization, Integer codeId)
     {
+        LpuIdAndReserveType(codeId);
       String req = "select  max(wcd.id) as id, to_char(wcd.calendardate,'dd.mm.yyyy') as date\n" +
               "                 from workCalendar wc \n" +
               "                 left join workcalendarday wcd on wcd.workcalendar_id=wc.id\n" +
@@ -74,7 +129,7 @@ public class Sql_request {
               "                 wcd.calendardate>=current_date\n" +
               "                and wct.medCase_id is null and wct.prepatient_id is null  \n" +
               "                and (wct.prepatientinfo is null or wct.prepatientinfo='') \n" +
-              "                and wct.reserveType_id is null\n" +
+              "                and wct.reserveType_id "+reserve_type+"\n"+ //"is null\n" +
               "                 and wf.id= \n" +id_doctor+  //поиск по сотруднику
               "                 and  vwf.id= \n"+id_specialization+ //поиск по специализации
               "and case when wcd.calendardate=current_date then case when wct.timefrom > current_time then 1 else 0 end else 1 end =1\n" +
@@ -84,8 +139,9 @@ public class Sql_request {
         return req;
     }
 
-    public  static  String SelectTimeSecond(Integer id_date)
+    public  static  String SelectTimeSecond(Integer id_date,Integer codeId)
     {
+        LpuIdAndReserveType(codeId);
         String req = "select max(wct.id) as id,cast(wct.timeFrom as varchar(5)) as time\n" +
                 "from WorkCalendarTime wct\n" +
                 "left join VocServiceReserveType vsrt on vsrt.id=wct.reserveType_id\n" +
@@ -95,7 +151,8 @@ public class Sql_request {
                 "left join vocworkfunction vwf on vwf.id=wf.workfunction_id\n" +
                 "where \n" +
                 "wct.workCalendarDay_id = \n" + id_date +
-                "and wct.medCase_id is null and wct.prepatient_id is null and (wct.prepatientinfo is null or wct.prepatientinfo='') and wct.reserveType_id is null\n" +
+                "and wct.medCase_id is null and wct.prepatient_id is null and (wct.prepatientinfo is null or wct.prepatientinfo='') " +
+                "and wct.reserveType_id "+reserve_type+"\n"+
                 "and (wcd.calendardate>current_date or (wcd.calendardate=current_date and wct.timefrom> current_time)) \n" +
                 "group by wct.timeFrom\n" +
                 "order by wct.timeFrom";
@@ -104,6 +161,7 @@ public class Sql_request {
 
     public  static  String SelectAllInformation(Integer id_time)
     {
+        //LpuIdAndReserveType(codeId);
         String req = "select vwf.name, \n" +
                 "case when wf.dtype ='GroupWorkFunction' then wf.groupname else p.lastname end\n" +
                 ",coalesce (p.firstname,'') as \"firstname\"\n" +
@@ -120,15 +178,16 @@ public class Sql_request {
                 "and wf.group_id is null  \n" +
                 "and (wf.archival is null or wf.archival='0') \n" +
                 "and (wf.isnoviewremoteuser  ='0' or wf.isnoviewremoteuser is null) \n" +
-                "and coalesce(w.lpu_id,wf.lpu_id)=180 \n" +
+               // "and coalesce(w.lpu_id,wf.lpu_id) "+lpu_id+"\n" +
                 "and wct.id ="+id_time;
 
 
         return  req;
     }
 
-    public  static  String SelectDateFirst(Integer id_specialization)
+    public  static  String SelectDateFirst(Integer id_specialization,Integer codeId)
     {
+        LpuIdAndReserveType(codeId);
        String req ="select  max(wcd.id) as id, to_char(wcd.calendardate,'dd.mm.yyyy') as date\n" +
                "                 from workCalendar wc \n" +
                "                 left join workcalendarday wcd on wcd.workcalendar_id=wc.id\n" +
@@ -140,10 +199,11 @@ public class Sql_request {
                "                 wcd.calendardate>=current_date\n" +
                "                and wct.medCase_id is null and wct.prepatient_id is null  \n" +
                "                and (wct.prepatientinfo is null or wct.prepatientinfo='') \n" +
-               "                and wct.reserveType_id is null\n" +
+               " and wct.reserveType_id "+reserve_type+"\n"+
                "                and case when wcd.calendardate=current_date then case when wct.timefrom > current_time then 1 else 0 end else 1 end =1\n" +
                "                and  vwf.id= "+id_specialization+ //поиск по специализации
-               " and w.lpu_id=180 "+
+               //" and w.lpu_id "+lpu_id+" \n"+
+               " and coalesce(w.lpu_id,wf.lpu_id) "+lpu_id+"  \n"+
                "                group by wcd.calendardate\n" +
                "                having count (wct.id)>0\n" +
                "                order by wcd.calendardate;";
@@ -151,8 +211,9 @@ public class Sql_request {
         return req;
     }
 
-    public  static  String SelectTimeFirst(Integer id_specialization, Integer id_date)
+    public  static  String SelectTimeFirst(Integer id_specialization, Integer id_date,Integer codeId)
     {
+        LpuIdAndReserveType(codeId);
         String req = "\n" +
                 "\n" +
                 "select max(wct.id) as id,cast(wct.timeFrom as varchar(5)) as time \n" +
@@ -165,9 +226,11 @@ public class Sql_request {
                 "     left join vocworkfunction vwf on vwf.id=wf.workfunction_id\n" +
                 "     where \n" +
                 "    vwf.id= " + id_specialization+
-                " and w.lpu_id=180\n"+
+                //" and w.lpu_id "+lpu_id+" \n"+
+                " and coalesce(w.lpu_id,wf.lpu_id) "+lpu_id+"  \n"+
                 " and wcd.calendardate = (select calendardate from workcalendarday where id = "+id_date+")"+
-                " and wct.medCase_id is null and wct.prepatient_id is null and (wct.prepatientinfo is null or wct.prepatientinfo='') and wct.reserveType_id is null\n" +
+                " and wct.medCase_id is null and wct.prepatient_id is null and (wct.prepatientinfo is null or wct.prepatientinfo='') " +
+                "and wct.reserveType_id "+reserve_type+"\n"+
                 "and (wcd.calendardate>current_date or (wcd.calendardate=current_date and wct.timefrom> current_time)) \n" +
                 "group by wct.timeFrom\n" +
                 "     order by wct.timeFrom";
@@ -198,11 +261,53 @@ public class Sql_request {
         return req;
     }
 
+    public static String SelectUnknownPatient(String lastname,String firstname, String middlename, String birthday)
+    {
+       String req = "Select id from Patient \n" +
+               "where noactuality is null \n" +
+               "and deathdate is null \n" +
+               "and birthday ='"+birthday+"' \n" +
+               "and lastname = '"+lastname+"' \n" +
+               "and firstname='"+firstname+"' and middlename='"+middlename+"'";
+
+       return req;
+    }
+    public static String RecordUnknownPatient(String FIO, String birthday, Integer time_id)
+    {
+       String req = "update WorkCalendarTime \n" +
+               "set\n" +
+               "createprerecord = 'FromSite',\n" +
+               "createdateprerecord = current_date,\n" +
+               "createtimeprerecord= current_time,\n" +
+               "prepatientinfo ='"+FIO+"' \n" +
+               "where id= "+time_id+"\n"+
+               "and prepatient_id is null\n" +
+               "and prepatientinfo is null\n" +
+               "returning id;";
+
+       return req;
+    }
+
+    public static String RecordKnownPatient(Integer patietnId, Integer time_id)
+    {
+        String req = "update WorkCalendarTime \n" +
+                "set\n" +
+                "createprerecord = 'FromSite',\n" +
+                "createdateprerecord = current_date,\n" +
+                "createtimeprerecord= current_time," +
+                "prepatient_id ='"+patietnId+"'\n" +
+                //"prepatientinfo ='"+FIO+"' \n" +
+                "where id= "+time_id+"\n"+
+                "and prepatient_id is null\n" +
+                "and prepatientinfo is null\n" +
+                "returning id;";
+
+        return req;
+    }
+
     public static  String CheckPatientEmpty(Integer time_id)
     {
         String req ="select prepatient_id from WorkCalendarTime where id="+time_id;
         return req;
     }
-
-
 }

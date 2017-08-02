@@ -4,17 +4,15 @@ package ru.web.client;
  * Created by rkurbanov on 01.08.16.
  */
 
-import java.io.IOException;
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import ru.web.classes.*;
+import ru.web.service.IWebService;
+
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
-import ru.web.service.IWebService;
-import ru.web.classes.*;
-import ru.web.service.WebServiceImpl;
+import java.io.IOException;
+import java.net.URL;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Scanner;
 
 public class WebServiceClient {
@@ -29,7 +27,7 @@ public class WebServiceClient {
 
     public static void main(String[] args) throws IOException, SQLException {
 
-    //  URL url = new URL("http://192.168.7.19:1986/webservice/start?wsdl");
+      //URL url = new URL("http://192.168.7.19:1986/webservice/start?wsdl");
         URL url = new URL("http://192.168.2.45:1986/webservice/start?wsdl");
         QName qname = new QName("http://service.web.ru/", "WebServiceImplService");
         Service service = Service.create(url, qname);
@@ -190,6 +188,7 @@ public class WebServiceClient {
                         " записаны на прием к "+s.getName()+" "+s.getLastname()+" "+
                         s.getFirstname()+" "+s.getMiddlename()+" на "+s.getDate()+" "+s.getTime());
             }
+         //start.setUnknownPatientRecord();
            // List<ArrayOfAllinformation> all = start.getArrayOfAllinformation(id_time);  //start.setPatientRecord(id_patient,id_time).getAllinformation();
 
         /*    for (AllInformation s: all)

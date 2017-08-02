@@ -22,6 +22,7 @@ import java.net.Socket;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,75 +31,83 @@ import ru.web.SQL.*;
 
 public class WebServPublisher {
 
-    public static String URL;
-
+   /* public static String URL;
     public static String Name;
     public static String Password;
     public static String Ip;
     public static String Port;
     public static String Log;
     //public static int TypeLog;
-    public static String PathSaveLog;
+    public static String PathSaveLog;*/
+
+   public static String host,login,password,ip,port,logging,pathSave,key;
+/*
+#настройка jdbc
+db.host = jdbc:postgresql://192.168.10.2:5432/riams
+db.login = postgres
+db.password ="";
+
+#настройка сервиса
+ws.ip= http://192.168.2.45;
+ws.port
+
+#настройка логгера
+log.logging = 1
+log.pathSave = root/Server
+
+ */
+
 
 
     public static void main(String... args) throws IOException {
-        GetConfigurationXML();
-        Endpoint.publish(Ip+":"+Port+"/webservice/start", new WebServiceImpl());
+
+        propLoad();
+        //Endpoint.publish(ip+":"+port+"/webservice/start", new WebServiceImpl());
+        Endpoint.publish(ip+":"+port+"/", new WebServiceImpl());
         ResultSet result = null;
         sout("Сервер запущен успешно!");
-        sout("WSDL-файл по адресу "+Ip+":"+Port+"/webservice/start?wsdl");
-        sout("Строка подключению к БД: "+URL);
+        sout("WSDL-файл по адресу "+ip+":"+port+"/webservice/start?wsdl");
+        sout("Строка подключению к БД: "+host);
         sout("Попытка подключения к БД...");
-
         try {result = sql_connect.SQL_Select("select id from Patient limit 1");}
         catch (Exception ex) {ex.printStackTrace();}
         finally {System.out.println("...Подключено!");}
-        sout("Логгирование: "+Log);
+        sout("Логгирование: "+logging);
+
+    }
+
+
+
+    /**
+     * Загрузка файла-конфигурации
+     */
+    public static void propLoad()
+    {
+        FileInputStream fis = null;
+        Properties property = new Properties();
+
+        try {
+              //fis = new FileInputStream("config.properties");
+            fis = new FileInputStream("src/properties/config.properties");
+            property.load(fis);
+
+            host = property.getProperty("db.host");
+            login = property.getProperty("db.login");
+            password = property.getProperty("db.password");
+            ip = property.getProperty("ws.ip");
+            port = property.getProperty("ws.port");
+            logging = property.getProperty("log.logging");
+            pathSave= property.getProperty("log.pathSave");
+            key=property.getProperty("key.key");
+        } catch (IOException e) {
+            sout("Файл конфигурации не найден!");//e.printStackTrace();
+        }
     }
 
     private static void sout(String s)
     {
         System.out.println(s);
     }
-    private static void GetConfigurationXML() throws IOException {
-
-        DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
-        f.setValidating(false);
-        DocumentBuilder builder = null;
-        try {
-            builder = f.newDocumentBuilder();
-
-            Document doc = builder.parse(new File("configuration.xml"));
-            NodeList nodeList = doc.getElementsByTagName("config");
-
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Node node = nodeList.item(i);
-                if (Node.ELEMENT_NODE == node.getNodeType()) {
-                    Element element = (Element) node;
-                    URL=element.getElementsByTagName("url").item(0).getTextContent();
-                    Name=element.getElementsByTagName("name").item(0).getTextContent();
-                    Password=element.getElementsByTagName("password").item(0).getTextContent();
-                    Ip=element.getElementsByTagName("ip").item(0).getTextContent();
-                    Port=element.getElementsByTagName("port").item(0).getTextContent();
-
-                    Log=element.getElementsByTagName("log").item(0).getTextContent();
-                    PathSaveLog=element.getElementsByTagName("PathSaveLog").item(0).getTextContent();
-                }
-            }
-
-        } catch (ParserConfigurationException | SAXException | IOException e) {
-            sout("Файл конфигурации не найден!");//e.printStackTrace();
-        }
-
-        /*if(Log.equalsIgnoreCase("extend"))TypeLog=2;
-        if(Log.equalsIgnoreCase("short"))TypeLog=2;*/
-
-    }
-
-
-
-
-
 }
 
 

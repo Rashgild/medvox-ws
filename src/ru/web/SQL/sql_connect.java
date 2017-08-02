@@ -24,7 +24,7 @@ public class sql_connect {
         ResultSet result = null;
         try {
             Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection(WebServPublisher.URL, WebServPublisher.Name, WebServPublisher.Password);
+            connection = DriverManager.getConnection(WebServPublisher.host, WebServPublisher.login, WebServPublisher.password);
             Statement statement = null;
             statement = connection.createStatement();
             result = statement.executeQuery(query);
@@ -38,13 +38,13 @@ public class sql_connect {
         return result;
     }
 
-    /*public static ResultSet SQL_UpdIns (String s)
+   /* public static ResultSet SQL_UpdIns (String s)
     {
         Connection connection = null;
         ResultSet result= null;
         try {
             Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection(WebServPublisher.URL, WebServPublisher.Name, WebServPublisher.Password);
+            connection = DriverManager.getConnection(WebServPublisher.host, WebServPublisher.login, WebServPublisher.password);
             Statement statement = null;
             statement = connection.createStatement();
 
