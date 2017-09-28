@@ -272,14 +272,15 @@ public class Sql_request {
 
        return req;
     }
-    public static String RecordUnknownPatient(String FIO, String birthday, Integer time_id)
+    public static String RecordUnknownPatient(String FIO, String birthday,String phone, Integer time_id)
     {
        String req = "update WorkCalendarTime \n" +
                "set\n" +
                "createprerecord = 'FromSite',\n" +
                "createdateprerecord = current_date,\n" +
                "createtimeprerecord= current_time,\n" +
-               "prepatientinfo ='"+FIO+"' \n" +
+               "prepatientinfo ='"+FIO+" "+birthday+"'," +
+               "phone='"+phone+"' \n" +
                "where id= "+time_id+"\n"+
                "and prepatient_id is null\n" +
                "and prepatientinfo is null\n" +
@@ -288,14 +289,15 @@ public class Sql_request {
        return req;
     }
 
-    public static String RecordKnownPatient(Integer patietnId, Integer time_id)
+    public static String RecordKnownPatient(Integer patietnId, String phone,Integer time_id)
     {
         String req = "update WorkCalendarTime \n" +
                 "set\n" +
                 "createprerecord = 'FromSite',\n" +
                 "createdateprerecord = current_date,\n" +
                 "createtimeprerecord= current_time," +
-                "prepatient_id ='"+patietnId+"'\n" +
+                "prepatient_id ='"+patietnId+"'," +
+                "phone = '"+phone+"'\n" +
                 //"prepatientinfo ='"+FIO+"' \n" +
                 "where id= "+time_id+"\n"+
                 "and prepatient_id is null\n" +

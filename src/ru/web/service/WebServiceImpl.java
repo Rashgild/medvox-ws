@@ -455,17 +455,19 @@ public class WebServiceImpl implements IWebService {
 
     @Override
     @WebMethod
-    public ArrayOfAllinformation setUnknownPatientRecord(String FIO, String birthday,Integer id_time, String secretKey, String ip)
+    public ArrayOfAllinformation setUnknownPatientRecord(String FIO, String birthday,Integer id_time, String secretKey, String ip, String phone)
     {
         System.out.println("ФИО:"+FIO);
         System.out.println("BD: "+birthday);
         System.out.println("ID:  "+id_time);
         System.out.println("Secrt: "+secretKey);
         System.out.println("IP: "+ip);
+        System.out.println("Phone: "+phone);
 
         if(secretKey.equals(WebServPublisher.key)) {
-            String[] ss = birthday.split("\\.");
-            birthday = ss[2] + "-" + ss[1] + "-" + ss[0];
+
+           String[] ss = birthday.split("\\.");
+            String bd = ss[2] + "-" + ss[1] + "-" + ss[0];
 
             //System.out.println(birthday);
             ss = FIO.split(" ");
@@ -475,7 +477,7 @@ public class WebServiceImpl implements IWebService {
 
             //System.out.println(lastname+" "+firstname+" "+middlename);
 
-            ResultSet res = sql_connect.SQL_Select(Sql_request.SelectUnknownPatient(lastname, firstname, middlename, birthday));
+            ResultSet res = sql_connect.SQL_Select(Sql_request.SelectUnknownPatient(lastname, firstname, middlename, bd));
             Integer res_str=0;
             int i = 0;
             try {
@@ -486,9 +488,9 @@ public class WebServiceImpl implements IWebService {
                 }
                 //System.out.println(i);
                 if (i == 1) {
-                    res = sql_connect.SQL_Select(Sql_request.RecordKnownPatient(res_str, id_time));
+                    res = sql_connect.SQL_Select(Sql_request.RecordKnownPatient(res_str,phone, id_time));
                 } else {
-                    res = sql_connect.SQL_Select(Sql_request.RecordUnknownPatient(FIO, birthday, id_time));
+                    res = sql_connect.SQL_Select(Sql_request.RecordUnknownPatient(FIO, birthday, phone, id_time));
                 }
 
                 /**-----LogWriter*/

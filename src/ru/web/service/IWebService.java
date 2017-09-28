@@ -24,7 +24,7 @@ public interface IWebService {
     ArrayOfTime getArrayOfTimesSecond(Integer id_day);
     ArrayOfAllinformation setPatientRecord(Integer id_patient, Integer id_time);
     //ArrayOfAllinformation setUnknownPatientRecord(String FIO, String birthday,Integer id_time, String secretKey, String ip);
-    ArrayOfAllinformation setUnknownPatientRecord(String FIO, String birthday,Integer id_time, String secretKey, String ip);
+    ArrayOfAllinformation setUnknownPatientRecord(String FIO, String birthday,Integer id_time, String secretKey, String ip, String phone);
     int CheckTimeCalendar(Integer id_time);
     ArrayOfAllinformation getArrayOfAllinformation(Integer id_time);
 

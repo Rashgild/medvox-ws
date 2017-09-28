@@ -87,7 +87,7 @@ log.pathSave = root/Server
         Properties property = new Properties();
 
         try {
-              //fis = new FileInputStream("config.properties");
+            //  fis = new FileInputStream("config.properties");
             fis = new FileInputStream("src/properties/config.properties");
             property.load(fis);
 
