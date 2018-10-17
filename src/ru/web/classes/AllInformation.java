@@ -15,7 +15,8 @@ import javax.xml.bind.annotation.XmlType;
         "firstname",
         "middlename",
         "date",
-        "time"
+        "time",
+        "idtime"
 })
 public class AllInformation {
     @XmlElement(name = "name")
@@ -30,6 +31,8 @@ public class AllInformation {
     protected String date;
     @XmlElement(name = "time")
     protected String time;
+    @XmlElement(name = "idtime")
+    protected String idtime;
 
     public String getName() {
         return name;
@@ -77,5 +80,13 @@ public class AllInformation {
 
     public void setTime(String value) {
         this.time = value;
+    }
+
+    public String getIdtime() {
+        return idtime;
+    }
+
+    public void setIdtime(String idtime) {
+        this.idtime = idtime;
     }
 }
