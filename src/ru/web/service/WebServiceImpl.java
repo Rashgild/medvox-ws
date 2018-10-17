@@ -283,12 +283,6 @@ public class WebServiceImpl implements IWebService {
         }
         arrayOfAllinformation.setAllinfomation(allInformations);
 
-       /* *//**//**-----LogWriter*//**//*
-        String params=getParam("Integer id_time",id_time.toString());
-        writeLog(Log(getMethodName(),params,arrayOfAllinformation+""));
-        *//**//**-----LogWriter*//**//**/
-
-
         return arrayOfAllinformation;
     }
 
@@ -360,8 +354,8 @@ public class WebServiceImpl implements IWebService {
     private ArrayOfAllinformation SetNullPatient() {
         ArrayOfAllinformation arrayOfAllinformation = new ArrayOfAllinformation();
         List<AllInformation> allInformations = arrayOfAllinformation.getAllinformation();
-
         AllInformation allInformation = new AllInformation();
+        allInformation = new AllInformation();
         allInformation.setName("0");
         allInformation.setLastname("0");
         allInformation.setFirstname("0");
@@ -395,13 +389,12 @@ public class WebServiceImpl implements IWebService {
            String[] ss = birthday.split("\\.");
             String bd = ss[2] + "-" + ss[1] + "-" + ss[0];
 
-            //System.out.println(birthday);
+
             ss = FIO.split(" ");
             String lastname = ss[0].toUpperCase();
             String firstname = ss[1].toUpperCase();
             String middlename = ss[2].toUpperCase();
 
-            //System.out.println(lastname+" "+firstname+" "+middlename);
 
             ResultSet res = sql_connect.SQL_Select(Sql_request.SelectUnknownPatient(lastname, firstname, middlename, bd));
             Integer res_str=0;
@@ -410,23 +403,35 @@ public class WebServiceImpl implements IWebService {
                 while (res.next()) {
                     res_str = res.getInt("id");
                     i++;
-                   // System.out.println("ID="+res_str);
                 }
                 //System.out.println(i);
-                if (i == 1) {
-                    res = sql_connect.SQL_Select(Sql_request.RecordKnownPatient(res_str,phone, id_time));
-                } else {
-                    res = sql_connect.SQL_Select(Sql_request.RecordUnknownPatient(FIO, birthday, phone, id_time));
-                }
 
-                /**-----LogWriter*/
-                String params=getParam("String FIO",FIO.toString());
-                params+=getParam("Integer id_time",id_time.toString());
-                params+=getParam("String birthday",birthday.toString());
-                params+=getParam("String ip",ip.toString());
-                writeLog(Log(getMethodName(),params,res_str+""));
-                /**-----LogWriter*/
-                return getArrayOfAllinformation(id_time);
+                if(isTimeFree(id_time)) {
+
+                    if (i == 1) {
+                        res = sql_connect.SQL_Select(Sql_request.RecordKnownPatient(res_str, phone, id_time));
+                    } else {
+                        res = sql_connect.SQL_Select(Sql_request.RecordUnknownPatient(FIO, birthday, phone, id_time));
+                    }
+
+                    while (res.next()) {
+                        res_str = res.getInt("id");
+                    }
+                    System.out.println(">>>>>" + res_str);
+
+
+                    /**-----LogWriter*/
+                    String params = getParam("String FIO", FIO.toString());
+                    params += getParam("Integer id_time", id_time.toString());
+                    params += getParam("String birthday", birthday.toString());
+                    params += getParam("String ip", ip.toString());
+                    writeLog(Log(getMethodName(), params, res_str + ""));
+                    /**-----LogWriter*/
+
+                    return getArrayOfAllinformation(id_time);
+                }else {
+                    return SetNullPatient();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -437,20 +442,39 @@ public class WebServiceImpl implements IWebService {
         return SetNullPatient();
     }
 
-    public int CheckTimeCalendar(Integer id_time){
+    public boolean isTimeFree(Integer id_time) {
         ResultSet res = sql_connect.SQL_Select(Sql_request.CheckPatientEmpty(id_time));
-        int res_str=0;
+        int prepatientId=0;
+        String prepatientInfo="";
         try {
             while(res.next()){
-                res_str = res.getInt("prepatient_id");
+                prepatientId = res.getInt("prepatient_id");
+                prepatientInfo = res.getString("prepatientinfo");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        /**LogWriter*/
-        String params=getParam("Integer id_time",id_time.toString());
-        writeLog(Log(getMethodName(),params,res_str+""));
-        return res_str;
+
+        System.out.println("---->>>"+prepatientId);
+        System.out.println("---->>>"+prepatientInfo);
+
+
+        if(prepatientId==0 && prepatientInfo==null) return true;
+        else return false;
+    }
+    public int CheckTimeCalendar(Integer id_time){
+
+        ResultSet res = sql_connect.SQL_Select(Sql_request.CheckPatientEmpty(id_time));
+        int prepatientId=0;
+
+        try {
+            while(res.next()){
+                prepatientId = res.getInt("prepatient_id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return prepatientId;
     }
 
 
