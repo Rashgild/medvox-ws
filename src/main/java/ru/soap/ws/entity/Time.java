@@ -1,23 +1,21 @@
-package ru.web.classes;
+package ru.soap.ws.entity;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-/**
- * Created by rkurbanov on 03.08.16.
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Time", propOrder = {
         "id",
         "time"
 })
 public class Time {
+
     @XmlElement(name = "Id")
-    protected Integer id;
+    private Integer id;
     @XmlElement(name = "time")
-    protected String time;
+    private String time;
 
     public Integer getId() {
         return id;

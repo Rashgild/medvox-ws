@@ -1,13 +1,10 @@
-package ru.web.classes;
+package ru.soap.ws.entity;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-/**
- * Created by rkurbanov on 02.08.16.
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AllInformation", propOrder = {
         "name",
@@ -19,20 +16,21 @@ import javax.xml.bind.annotation.XmlType;
         "idtime"
 })
 public class AllInformation {
+
     @XmlElement(name = "name")
-    protected String name;
+    private String name;
     @XmlElement(name = "lastname")
-    protected String lastname;
+    private String lastname;
     @XmlElement(name = "firstname")
-    protected String firstname;
+    private String firstname;
     @XmlElement(name = "middlename")
-    protected String middlename;
+    private String middlename;
     @XmlElement(name = "date")
-    protected String date;
+    private String date;
     @XmlElement(name = "time")
-    protected String time;
+    private String time;
     @XmlElement(name = "idtime")
-    protected String idtime;
+    private String idtime;
 
     public String getName() {
         return name;

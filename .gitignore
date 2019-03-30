@@ -1,5 +1,4 @@
-
-*
-!src/ru/web/*
-!.gitignore
-
+/WebService.iml
+/src/META-INF/
+/lib/
+/.idea/

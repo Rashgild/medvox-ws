@@ -1,4 +1,4 @@
-package ru.web.classes;
+package ru.soap.ws.entity;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -7,23 +7,19 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by rkurbanov on 03.08.16.
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ArrayOfDate", propOrder = {
         "dates"
 })
-public class ArrayOfDate {
-
+public class Dates {
 
     @XmlElement(name = "Dates", nillable = true)
-    protected List<Date> dates;
+    private List<Date> dates;
 
 
     public List<Date> getDates() {
         if (dates == null) {
-            dates = new ArrayList<Date>();
+            dates = new ArrayList<>();
         }
         return this.dates;
     }

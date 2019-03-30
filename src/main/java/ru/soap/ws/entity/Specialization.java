@@ -1,16 +1,9 @@
-package ru.web.classes;
+package ru.soap.ws.entity;
 
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlType;
-
-/**
- * Created by rkurbanov on 01.08.16.
- */
-
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Specialization", propOrder = {
@@ -18,10 +11,11 @@ import javax.xml.bind.annotation.XmlType;
         "name"
 })
 public class Specialization {
+
     @XmlElement(name = "Id")
-    protected Integer id;
+    private Integer id;
     @XmlElement(name = "name")
-    protected String name;
+    private String name;
 
 
     public Integer getId() {
