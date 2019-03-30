@@ -9,7 +9,7 @@ import javax.xml.ws.Endpoint;
 import ru.soap.ws.utils.SqlConnect;
 import ru.soap.ws.service.WebServiceImpl;
 
-public class WebService {
+public class WebServicePublisher {
 
     public static String host, login, password, ip, port, logging, pathSave, key;
 
