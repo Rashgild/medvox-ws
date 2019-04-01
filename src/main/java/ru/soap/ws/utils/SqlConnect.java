@@ -7,7 +7,6 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import ru.soap.ws.endpoint.WebServicePublisher;
 import ru.soap.ws.service.WebServiceImpl;
 
 public class SqlConnect {
@@ -16,7 +15,12 @@ public class SqlConnect {
         ResultSet result = null;
         try {
             Class.forName("org.postgresql.Driver");
-            Connection connection = DriverManager.getConnection(WebServicePublisher.host, WebServicePublisher.login, WebServicePublisher.password);
+            PropertiesReader prop = new PropertiesReader();
+            String host = prop.properties.getProperty("db.host");
+            String login = prop.properties.getProperty("db.login");
+            String password = prop.properties.getProperty("db.password");
+
+            Connection connection = DriverManager.getConnection(host, login, password);
             Statement statement = connection.createStatement();
             result = statement.executeQuery(query);
             connection.close();

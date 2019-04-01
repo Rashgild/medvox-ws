@@ -1,17 +1,12 @@
 package ru.soap.ws.service;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 
-import ru.soap.ws.endpoint.WebServicePublisher;
 import ru.soap.ws.entity.AllInformation;
 import ru.soap.ws.entity.AllInformationList;
 import ru.soap.ws.entity.Date;
@@ -24,6 +19,7 @@ import ru.soap.ws.entity.Specialization;
 import ru.soap.ws.entity.Specializations;
 import ru.soap.ws.entity.Time;
 import ru.soap.ws.entity.Times;
+import ru.soap.ws.utils.PropertiesReader;
 import ru.soap.ws.utils.SqlConnect;
 import ru.soap.ws.utils.SqlRequest;
 
@@ -31,12 +27,9 @@ import ru.soap.ws.utils.SqlRequest;
 @WebService(endpointInterface = "ru.soap.ws.service.IWebService")
 public class WebServiceImpl implements IWebService {
 
-    private static int tempid = 1;
-
     @Override
     @WebMethod
     public Patients getArrayOfPatient(Integer birthday) { //получение списка специальностей
-        tempid = birthday;
         Patients arrayOfPatient = new Patients();
         List<Patient> patients = arrayOfPatient.getPatients();
 
@@ -58,12 +51,6 @@ public class WebServiceImpl implements IWebService {
         }
 
         arrayOfPatient.setPatients(patients);
-
-        /**-----LogWriter*/
-        String params = getParam("Integer birthday", birthday.toString());
-        writeLog(Log(getMethodName(), params, arrayOfPatient + ""));
-        /**-----LogWriter*/
-
         return arrayOfPatient;
     }
 
@@ -80,9 +67,7 @@ public class WebServiceImpl implements IWebService {
         Specializations arr = new Specializations();
         List<Specialization> specializations = arr.getSpecializations();
         // Запрос на вывод специальности
-
         ResultSet ResultSQLRequest = SqlConnect.SQL_Select(SqlRequest.selectSpecialization(id));
-        //Specialization spec = new Specialization();
         try {
             while (ResultSQLRequest.next()) {
                 Specialization spec = new Specialization();
@@ -95,17 +80,12 @@ public class WebServiceImpl implements IWebService {
         }
 
         arr.setSpecializations(specializations);
-        /*-----LogWriter*/
-        String params = getParam("Integer idLpu", id.toString());
-        writeLog(Log(getMethodName(), params, arr + ""));
-        /*-----LogWriter*/
         return arr;
     }
 
     @Override
     @WebMethod
     public Doctors getArrayOfDoctor(Integer id_specialization) {//получение списка врачей
-
         return getArrayOfDoctorExtend(id_specialization, 180);
     }
 
@@ -133,15 +113,8 @@ public class WebServiceImpl implements IWebService {
 
         doctors.setDoctors(doctorList);
 
-
-        /**-----LogWriter*/
-        String params = getParam("Integer id_specialization", id_specialization.toString());
-        writeLog(Log(getMethodName(), params, doctors + ""));
-        /**-----LogWriter*/
-
         return doctors;
     }
-
 
     @Override
     @WebMethod
@@ -157,11 +130,6 @@ public class WebServiceImpl implements IWebService {
         List<Date> dates = getArrayOfDates(ResultSQLRequest);
         arr.setDates(dates);
 
-        /**-----LogWriter*/
-        String params = getParam("Integer id_specialization", id_specialization.toString());
-        writeLog(Log(getMethodName(), params, arr + ""));
-        /**-----LogWriter*/
-
         return arr;
     }
 
@@ -175,16 +143,10 @@ public class WebServiceImpl implements IWebService {
     @WebMethod
     public Dates getArrayOfDatesSecondExtend(Integer id_specialization, Integer id_doctor, Integer codeId) {
         Dates dates = new Dates();
-
         ResultSet ResultSQLRequest = SqlConnect.SQL_Select(SqlRequest.selectDateSecond(id_doctor, id_specialization, codeId));
         List<Date> dateList = getArrayOfDates(ResultSQLRequest);
         dates.setDates(dateList);
 
-        /**-----LogWriter*/
-        String params = getParam("Integer id_specialization", id_specialization.toString());
-        params += getParam("Integer id_doctor", id_doctor.toString());
-        writeLog(Log(getMethodName(), params, dates + ""));
-        /**-----LogWriter*/
         return dates;
     }
 
@@ -221,13 +183,6 @@ public class WebServiceImpl implements IWebService {
         ResultSet ResultSQLRequest = SqlConnect.SQL_Select(SqlRequest.selectTimeFirst(id_specialization, id_date, codeId));
         List<Time> times = getArrayOfTimes(ResultSQLRequest);
         arr.setTimes(times);
-
-        /**-----LogWriter*/
-        String params = getParam("Integer id_specialization", id_specialization.toString());
-        params += getParam("Integer id_date", id_date.toString());
-        writeLog(Log(getMethodName(), params, arr + ""));
-        /**-----LogWriter*/
-
         return arr;
     }
 
@@ -271,18 +226,18 @@ public class WebServiceImpl implements IWebService {
     public AllInformationList getArrayOfAllinformation(Integer id_time) {
         AllInformationList arrayOfAllinformation = new AllInformationList();
         List<AllInformation> allInformations = arrayOfAllinformation.getAllinformation();
-        ResultSet ResultSQLRequest = SqlConnect.SQL_Select(SqlRequest.selectAllInformation(id_time));
+        ResultSet resultSet = SqlConnect.SQL_Select(SqlRequest.selectAllInformation(id_time));
 
         AllInformation allInformation;
         try {
-            while (ResultSQLRequest.next()) {
+            while (resultSet.next()) {
                 allInformation = new AllInformation();
-                allInformation.setName((ResultSQLRequest.getString("name")));
-                allInformation.setLastname((ResultSQLRequest.getString("lastname")));
-                allInformation.setFirstname((ResultSQLRequest.getString("firstname")));
-                allInformation.setMiddlename((ResultSQLRequest.getString("middlename")));
-                allInformation.setDate((ResultSQLRequest.getString("date")));
-                allInformation.setTime((ResultSQLRequest.getString("time")));
+                allInformation.setName((resultSet.getString("name")));
+                allInformation.setLastname((resultSet.getString("lastname")));
+                allInformation.setFirstname((resultSet.getString("firstname")));
+                allInformation.setMiddlename((resultSet.getString("middlename")));
+                allInformation.setDate((resultSet.getString("date")));
+                allInformation.setTime((resultSet.getString("time")));
                 allInformations.add(allInformation);
             }
         } catch (SQLException e) {
@@ -297,25 +252,22 @@ public class WebServiceImpl implements IWebService {
     @WebMethod
     public AllInformationList setPatientRecord(Integer id_patient, Integer id_time) {
         try {
-            if (CheckTimeCalendar(id_time) == 0) {
-                ResultSet res = SqlConnect.SQL_Select(SqlRequest.updatePatient(id_patient, id_time));
+            if (checkTimeCalendar(id_time) == 0) {
+                ResultSet resultSet = SqlConnect.SQL_Select(SqlRequest.updatePatient(id_patient, id_time));
                 int res_str = 0;
 
-                while (res.next()) {
-                    res_str = res.getInt("id");
+                while (resultSet.next()) {
+                    res_str = resultSet.getInt("id");
                 }
 
                 if (res_str > 0) {
-                    /**-----LogWriter*/
-                    String params = getParam("Integer id_patient", id_patient.toString());
-                    params += getParam("Integer id_time", id_time.toString());
-                    writeLog(Log(getMethodName(), params, res_str + ""));
-                    /**-----LogWriter*/
                     return getArrayOfAllinformation(id_time);
                 } else {
                     return SetNullPatient();
                 }
-            } else return SetNullPatient();
+            } else {
+                return SetNullPatient();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -343,16 +295,13 @@ public class WebServiceImpl implements IWebService {
 
     @Override
     @WebMethod
-    public AllInformationList setUnknownPatientRecord(String FIO, String birthday, Integer id_time, String secretKey, String ip, String phone) {
-/*        System.out.println("ФИО:" + FIO);
-        System.out.println("BD: " + birthday);
-        System.out.println("ID:  " + id_time);
-        System.out.println("Secrt: " + secretKey);
-        System.out.println("IP: " + ip);
-        System.out.println("Phone: " + phone);*/
+    public AllInformationList setUnknownPatientRecord(String FIO, String birthday, Integer id_time,
+                                                      String secretKey, String ip, String phone) {
 
-        if (secretKey.equals(WebServicePublisher.key)) {
+        PropertiesReader prop = new PropertiesReader();
+        String key = prop.properties.getProperty("key.key");
 
+        if (secretKey.equals(key)) {
             String[] ss = birthday.split("\\.");
             String bd = ss[2] + "-" + ss[1] + "-" + ss[0];
 
@@ -361,24 +310,24 @@ public class WebServiceImpl implements IWebService {
             String firstname = ss[1].toUpperCase();
             String middlename = ss[2].toUpperCase();
 
-            ResultSet res = SqlConnect.SQL_Select(SqlRequest.selectUnknownPatient(lastname, firstname, middlename, bd));
+            ResultSet resultSet = SqlConnect.SQL_Select(SqlRequest.selectUnknownPatient(lastname, firstname, middlename, bd));
             int res_str = 0;
             int i = 0;
             try {
-                while (res.next()) {
-                    res_str = res.getInt("id");
+                while (resultSet.next()) {
+                    res_str = resultSet.getInt("id");
                     i++;
                 }
                 if (isTimeFree(id_time)) {
 
                     if (i == 1) {
-                        res = SqlConnect.SQL_Select(SqlRequest.recordKnownPatient(res_str, phone, id_time));
+                        resultSet = SqlConnect.SQL_Select(SqlRequest.recordKnownPatient(res_str, phone, id_time));
                     } else {
-                        res = SqlConnect.SQL_Select(SqlRequest.recordUnknownPatient(FIO, birthday, phone, id_time));
+                        resultSet = SqlConnect.SQL_Select(SqlRequest.recordUnknownPatient(FIO, birthday, phone, id_time));
                     }
 
-                    while (res.next()) {
-                        res_str = res.getInt("id");
+                    while (resultSet.next()) {
+                        res_str = resultSet.getInt("id");
                     }
                     System.out.println(">>>>>" + res_str);
 
@@ -408,19 +357,12 @@ public class WebServiceImpl implements IWebService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        System.out.println("---->>>" + prepatientId);
-        System.out.println("---->>>" + prepatientInfo);
-
-
         return prepatientId == 0 && prepatientInfo == null;
     }
 
-    public int CheckTimeCalendar(Integer id_time) {
-
+    public int checkTimeCalendar(Integer id_time) {
         ResultSet res = SqlConnect.SQL_Select(SqlRequest.checkPatientEmpty(id_time));
         int prepatientId = 0;
-
         try {
             while (res.next()) {
                 prepatientId = res.getInt("prepatient_id");
@@ -430,51 +372,4 @@ public class WebServiceImpl implements IWebService {
         }
         return prepatientId;
     }
-
-
-    private static void writeLog(String string) {
-        if (!WebServicePublisher.logging.equals("0")) {
-            try (FileWriter writer = new FileWriter(WebServicePublisher.pathSave + "/Log.txt", true)) {
-                writer.write(string);
-                writer.close();
-            } catch (IOException ex) {
-                System.out.println(ex.getMessage());
-            }
-        }
-    }
-
-    private static String Log(String methodName, String params, String returns) {
-        String res = "<log>";
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        java.util.Date date = new java.util.Date();
-        res += "<ID>" + tempid + "</ID>";
-        res += "<Date>" + dateFormat.format(date) + "</Date>";
-        res += methodName;
-        res += params;
-        res += "<return>" + returns + "</return>";
-        res += "</method></log>";
-        return res;
-    }
-
-    private static String getParam(String param, String value) {
-        String res = "<param>" + param + "</param><value>" + value + "</value>";
-        return res;
-    }
-
-    private static String getMethodName() {
-        Throwable t = new Throwable();
-        StackTraceElement trace[] = t.getStackTrace();
-        if (trace.length > 1) {
-            StackTraceElement element = trace[1];
-            //System.out.format("[%s] %s", element.getMethodName(), message);
-            return "<method>" + element.getMethodName();
-        }
-        return "";
-    }
 }
-
-
-
-
-
-

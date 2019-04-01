@@ -15,18 +15,20 @@ import ru.soap.ws.entity.Patient;
 import ru.soap.ws.entity.Specialization;
 import ru.soap.ws.entity.Time;
 import ru.soap.ws.service.IWebService;
+import ru.soap.ws.utils.PropertiesReader;
 
 public class WebServiceClient {
 
     public static void main(String[] args) throws IOException {
+        PropertiesReader prop = new PropertiesReader();
+        URL url = new URL(prop.properties.getProperty("ws.ip") + ":" +
+                prop.properties.getProperty("ws.port") + "/webservice/start?wsdl");
 
-        //URL url = new URL("http://192.168.7.19:1986/webservice/start?wsdl");
-        URL url = new URL("http://192.168.2.45:1986/webservice/start?wsdl");
         QName qname = new QName("http://service.web.ru/", "WebServiceImplService");
         Service service = Service.create(url, qname);
         final IWebService start = service.getPort(IWebService.class);
 
-        int i = 0;
+        int i;
         int id_spec = 0,
                 id_doc = 0,
                 id_date = 0,
@@ -39,34 +41,32 @@ public class WebServiceClient {
                 str_id_date = "",
                 str_id_time = "",
                 str_bithdate_patient = "",
-                str_lastname = "р", str_firstname = "р", str_middlename = "р", str_nam = "";
+                str_lastname, str_firstname, str_middlename;
 
 
-//-----Идентефикация пациента
-
+        //-----Идентефикация пациента
         System.out.println("Введите вашу дату рождения в формате ГГГГММДД");
-        bithdate_patient = CheckInput(str_bithdate_patient, bithdate_patient);
+        bithdate_patient = checkInput(str_bithdate_patient, bithdate_patient);
 
         List<Patient> patients = start.getArrayOfPatient(bithdate_patient).getPatients();
-       /* for (Patient s: sp0)
-        { i++;
-            System.out.println(i+"id="+s.getId()+"ФИО=" +s.getLastname()+" "+
-                    s.getFirstname()+" "+s.getMiddlename()+" Дата рождения= "+s.getBirthday());
-        }*/
-        i = 0;
 
-        String strf = "5";
+        for (Patient patient : patients) {
+            System.out.println("(" + patient.getBirthday() + ")" + patient.getLastname() +
+                    " " + patient.getFirstname() + " " + patient.getMiddlename());
+        }
+
+        i = 0;
         System.out.println("Введите Ваши ФИО (одной строкой)");
-        strf = InputFio(strf);
+        String strf = inputFio();
         String[] ss = strf.split(" ");
         str_lastname = ss[0];
         str_firstname = ss[1];
         str_middlename = ss[2];
         System.out.println("Здравствуйте, " + str_lastname + " " + str_firstname + " " + str_middlename);
 
-        for (Patient s : patients) {
-            if (s.getLastname().equalsIgnoreCase(str_lastname)) {
-                id_patient = s.getId();
+        for (Patient p : patients) {
+            if (p.getLastname().equalsIgnoreCase(str_lastname)) {
+                id_patient = p.getId();
                 System.out.println("Здравствуйте, " + str_lastname + " " + str_firstname + " " + str_middlename);
                 break;
             }
@@ -87,7 +87,7 @@ public class WebServiceClient {
         i = 0;
 
         System.out.println("Введите Id специальности");
-        id_spec = CheckInput(str_id_special, id_spec);
+        id_spec = checkInput(str_id_special, id_spec);
         //System.out.println ("sp="+start.getArrayOfDoctor(id_spec).getDoctors().size());
         List<Doctor> sp1 = start.getArrayOfDoctor(id_spec).getDoctors();
         for (Doctor s : sp1) {
@@ -99,7 +99,7 @@ public class WebServiceClient {
 
 
         System.out.println(" Введите Id врача \n Если хотите перейти к выбору даты - введите 0");
-        id_doc = CheckInput(str_id_doc, id_doc);
+        id_doc = checkInput(str_id_doc, id_doc);
 
 
         //разветвление на выбор врача или...
@@ -110,7 +110,7 @@ public class WebServiceClient {
                 System.out.println(i + " Дата= " + s.getDate() + " Id = " + s.getId());
             }
             System.out.println("Введите Id даты");
-            id_date = CheckInput(str_id_date, id_date);
+            id_date = checkInput(str_id_date, id_date);
 
             List<Time> sp3 = start.getArrayOfTimesSecond(id_date).getTimes();
             for (Time s : sp3) {
@@ -118,7 +118,7 @@ public class WebServiceClient {
                 System.out.println(i + " Время= " + s.getTime() + " Id = " + s.getId());
             }
             System.out.println("Введите Id времени ");
-            id_time = CheckInput(str_id_time, id_time);
+            id_time = checkInput(str_id_time, id_time);
         }
 
         //...на выбор сразу времени
@@ -129,7 +129,7 @@ public class WebServiceClient {
                 System.out.println(i + " Дата= " + s.getDate() + " Id = " + s.getId());
             }
             System.out.println("Введите Id даты");
-            id_date = CheckInput(str_id_date, id_date);
+            id_date = checkInput(str_id_date, id_date);
 
             List<Time> sp3 = start.getArrayOfTimesFirst(id_spec, id_date).getTimes();
             for (Time s : sp3) {
@@ -137,7 +137,7 @@ public class WebServiceClient {
                 System.out.println(i + " Время= " + s.getTime() + " Id = " + s.getId());
             }
             System.out.println("Введите Id времени ");
-            id_time = CheckInput(str_id_time, id_time);
+            id_time = checkInput(str_id_time, id_time);
         }
         i = 0;
 
@@ -154,7 +154,7 @@ public class WebServiceClient {
         //start.getArr
 
 
-        //int result2 = start.CheckTimeCalendar(id_time);
+        //int result2 = start.checkTimeCalendar(id_time);
 
         //if(result2==0)
         //{
@@ -193,10 +193,9 @@ public class WebServiceClient {
         //else System.out.println("ОЙ! Что-то пошло не так! Давайте попробуем снова?");
     }
 
-
-    private static int CheckInput(String str, int id) {
+    private static int checkInput(String str, int id) {
         Scanner scan = new Scanner(System.in);
-        while (str.matches("^\\d+$") == false) {
+        while (!str.matches("^\\d+$")) {
             str = scan.nextLine();
             if ((str.matches("^\\d+$"))) {
                 id = Integer.parseInt(str);
@@ -206,11 +205,9 @@ public class WebServiceClient {
         return id;
     }
 
-    private static String InputFio(String str) {
-
+    private static String inputFio() {
         Scanner scan = new Scanner(System.in);
-        str = scan.nextLine();
+        String str = scan.nextLine();
         return str;
     }
 }
-

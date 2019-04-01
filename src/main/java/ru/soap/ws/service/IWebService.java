@@ -35,7 +35,7 @@ public interface IWebService {
 
     AllInformationList setUnknownPatientRecord(String FIO, String birthday, Integer id_time, String secretKey, String ip, String phone);
 
-    int CheckTimeCalendar(Integer id_time);
+    int checkTimeCalendar(Integer id_time);
 
     AllInformationList getArrayOfAllinformation(Integer id_time);
 

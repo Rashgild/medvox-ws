@@ -1,5 +1,4 @@
 /src/META-INF/
 /WebService.iml
-/lib/
 /.idea/
-/out/
+/target/
